@@ -183,7 +183,7 @@ void LuaBinding::bindPlayState()
 {
 	module(mLuaState)
 	[
-		class_<PlayState, bases<GameState>>("PlayState")
+		class_<PlayState, GameState>("PlayState")
 		.enum_("States")
 		[
 			value("debug", 0),

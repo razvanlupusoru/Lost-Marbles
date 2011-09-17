@@ -22,7 +22,7 @@
 class PlayState : public GameState
 {
 public:
-	static enum Mode{NORMAL, DEBUG, TRANSITION};
+	enum Mode{NORMAL, DEBUG, TRANSITION};
 	void enter();
 	void loadSavedGame(std::string savedGameFilename);
 	bool saveGame();
@@ -80,7 +80,7 @@ private:
 	void updateLife();
 	void createScene();
 	void clearScene();
-	void restoreActors(std::vector<std::string> &listOfNames);
+	void restoreActors(const std::vector<std::string> &listOfNames);
 	void loadHydrax();
 	void resetIndicator();
 	void alterPlayState(Mode);

@@ -568,7 +568,7 @@ void PlayState::loadHelpLayout(const std::string & layoutFile)
 	}
 }
 
-void PlayState::restoreActors(std::vector<std::string> &listOfNames)
+void PlayState::restoreActors(const std::vector<std::string> &listOfNames)
 {
 	Ogre::DotLevelLoader loader(mLuaState);
 	loader.reloadNodesAndActors(mLevels[mCurrentLevel].filename+".level", mLevels[mCurrentLevel].filename+".actors",listOfNames,"General", mSceneMgr, mWorld, mActors, mFriends, mRivals, mTargets, &mFocusActor);	
@@ -865,14 +865,13 @@ bool PlayState::frameStarted(const FrameEvent& evt)
 			}*/
 		}
 
-		for(std::map<String, Actor*>::iterator i = mActors.begin(); i != mActors.end(); i++)
-		{
+		std::map<String, Actor*>::iterator i = mActors.begin();
+		while(i != mActors.end()) {
 			Actor* a = i->second;
 			a->update(evt.timeSinceLastFrame);
-			if(a->removeMe())
-			{
-				i = mActors.erase(i);
-				i--;
+			if(a->removeMe()) {
+				mActors.erase(i);
+				i = mActors.begin();
 				std::vector<CollectibleMarble*>::iterator collectIter = std::find(mTargets.begin(), mTargets.end(), a);
 				if(collectIter != mTargets.end())
 					mTargets.erase(collectIter);
@@ -892,7 +891,7 @@ bool PlayState::frameStarted(const FrameEvent& evt)
 				mSceneMgr->destroyEntity(tempEntity);
 				mWorld->removeObject(tempBody);
 				delete tempBody;
-			}
+			} else ++i;
 		}
 
 		if(mFriends.size()==0)
@@ -1023,31 +1022,40 @@ void PlayState::pauseGame()
 
 void PlayState::createSounds()
 {
-	mSoundMgr->MapSound("bgmVoices", mSoundMgr->CreateLoopedStream(String("Voices.mp3")));
-	mSoundMgr->MapSound("bgmCompass", mSoundMgr->CreateLoopedStream(String("Compass.mp3")));
-	mSoundMgr->MapSound("bgmSleep", mSoundMgr->CreateLoopedStream(String("Sleep.mp3")));
-	mSoundMgr->MapSound("bgmBlossoms", mSoundMgr->CreateLoopedStream(String("Blossoms.mp3")));
-	mSoundMgr->MapSound("bgmLogic", mSoundMgr->CreateLoopedStream(String("Logic.mp3")));
-	mSoundMgr->MapSound("bgmTrace", mSoundMgr->CreateLoopedStream(String("Trace.mp3")));
-	mSoundMgr->MapSound("bgmMarsh", mSoundMgr->CreateLoopedStream(String("Marsh.mp3")));
-	mSoundMgr->MapSound("roll", mSoundMgr->CreateLoopedSound(String("marbleroll_loop.wav")));
-	mSoundMgr->MapSound("jump", mSoundMgr->CreateSound(String("jump.wav")));
-	mSoundMgr->MapSound("drop", mSoundMgr->CreateSound(String("marbledrop.wav")));
-	mSoundMgr->MapSound("collide", mSoundMgr->CreateSound(String("collision.wav")));
-	mSoundMgr->MapSound("cry1", mSoundMgr->CreateLoopedSound(String("cheese3.mp3")));
-	mSoundMgr->MapSound("cry2", mSoundMgr->CreateLoopedSound(String("cheese4.mp3")));
-	mSoundMgr->MapSound("collect", mSoundMgr->CreateSound(String("marblecollect.wav")));
-	mSoundMgr->MapSound("spawn", mSoundMgr->CreateSound(String("echoplop.wav")));
-	mSoundMgr->MapSound("console", mSoundMgr->CreateStream(String("console.wav")));
-	mSoundMgr->MapSound("pause", mSoundMgr->CreateStream(String("pause.mp3")));
-	mSoundMgr->MapSound("heal", mSoundMgr->CreateSound(String("heal.wav")));
-	mSoundMgr->MapSound("float", mSoundMgr->CreateSound(String("boing.wav")));
-	mSoundMgr->MapSound("bounce", mSoundMgr->CreateSound(String("boing2.wav")));
-	mSoundMgr->MapSound("stick", mSoundMgr->CreateSound(String("splat.mp3")));
-	mSoundMgr->MapSound("speed", mSoundMgr->CreateSound(String("moonblast.wav")));
-	mSoundMgr->MapSound("teleport", mSoundMgr->CreateSound(String("teleport.wav")));
-	mSoundMgr->MapSound("stickyroll", mSoundMgr->CreateLoopedSound(String("splatloop.wav")));
-	mSoundMgr->MapSound("wearoff", mSoundMgr->CreateStream(String("wearoff.wav")));
+	String bgmVoices("Voices.mp3"), bgmCompass("Compass.mp3"), bgmSleep("Sleep.mp3"),
+		bgmBlossoms("Blossoms.mp3"), bgmLogic("Logic.mp3"), bgmTrace("Trace.mp3"),
+		bgmMarsh("Marsh.mp3"), roll("marbleroll_loop.wav"), jump("jump.wav"),
+		drop("marbledrop.wav"), collide("collision.wav"), cry1("cheese3.mp3"),
+		cry2("cheese4.mp3"), collect("marblecollect.wav"), spawn("echoplop.wav"),
+		console("console.wav"), pause("pause.mp3"), heal("heal.wav"),
+		floatsound("boing.wav"), bounce("boing2.wav"), stick("splat.mp3"),
+		speed("moonblast.wav"), teleport("teleport.wav"), stickyroll("splatloop.wav"),
+		wearoff("wearoff.wav");
+	mSoundMgr->MapSound("bgmVoices", mSoundMgr->CreateLoopedStream(bgmVoices));
+	mSoundMgr->MapSound("bgmCompass", mSoundMgr->CreateLoopedStream(bgmCompass));
+	mSoundMgr->MapSound("bgmSleep", mSoundMgr->CreateLoopedStream(bgmSleep));
+	mSoundMgr->MapSound("bgmBlossoms", mSoundMgr->CreateLoopedStream(bgmBlossoms));
+	mSoundMgr->MapSound("bgmLogic", mSoundMgr->CreateLoopedStream(bgmLogic));
+	mSoundMgr->MapSound("bgmTrace", mSoundMgr->CreateLoopedStream(bgmTrace));
+	mSoundMgr->MapSound("bgmMarsh", mSoundMgr->CreateLoopedStream(bgmMarsh));
+	mSoundMgr->MapSound("roll", mSoundMgr->CreateLoopedSound(roll));
+	mSoundMgr->MapSound("jump", mSoundMgr->CreateSound(jump));
+	mSoundMgr->MapSound("drop", mSoundMgr->CreateSound(drop));
+	mSoundMgr->MapSound("collide", mSoundMgr->CreateSound(collide));
+	mSoundMgr->MapSound("cry1", mSoundMgr->CreateLoopedSound(cry1));
+	mSoundMgr->MapSound("cry2", mSoundMgr->CreateLoopedSound(cry2));
+	mSoundMgr->MapSound("collect", mSoundMgr->CreateSound(collect));
+	mSoundMgr->MapSound("spawn", mSoundMgr->CreateSound(spawn));
+	mSoundMgr->MapSound("console", mSoundMgr->CreateStream(console));
+	mSoundMgr->MapSound("pause", mSoundMgr->CreateStream(pause));
+	mSoundMgr->MapSound("heal", mSoundMgr->CreateSound(heal));
+	mSoundMgr->MapSound("float", mSoundMgr->CreateSound(floatsound));
+	mSoundMgr->MapSound("bounce", mSoundMgr->CreateSound(bounce));
+	mSoundMgr->MapSound("stick", mSoundMgr->CreateSound(stick));
+	mSoundMgr->MapSound("speed", mSoundMgr->CreateSound(speed));
+	mSoundMgr->MapSound("teleport", mSoundMgr->CreateSound(teleport));
+	mSoundMgr->MapSound("stickyroll", mSoundMgr->CreateLoopedSound(stickyroll));
+	mSoundMgr->MapSound("wearoff", mSoundMgr->CreateStream(wearoff));
 }
 
 
@@ -1116,7 +1124,7 @@ int PlayState::interpretConsoleCommand(const MyGUI::UString & command)
 	/* This method must be redone in a different way */
 
 	std::string sCommand = (std::string)command;
-	std::vector<Ogre::String> splitStrings = Ogre::StringUtil::split(sCommand, " ", 4);
+	Ogre::StringVector splitStrings = Ogre::StringUtil::split(sCommand, " ", 4);
 	std::string s = splitStrings.front();
 	if(s.compare("close")==0)
 	{

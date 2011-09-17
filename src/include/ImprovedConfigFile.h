@@ -27,7 +27,7 @@ public:
       ConfigFile::load(filename, separators, trimWhitespace);
     }
    
-   bool ImprovedConfigFile::save()
+   bool save()
    {
       if(!filename.length())
       {

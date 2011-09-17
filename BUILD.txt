@@ -1,1 +1,7 @@
 The purpose of this file is to explain how to set up the build environment.
+
+WINDOWS:
+1) Obtain MinGW from www.mingw.org and install it.
+2) Add the MinGW binaries to your PATH environment variable. In Windows 7, right click on "Computer", go to "Advanced System Settings", then to "Advanced" tab, and then click on "Environment Variables". Modify the "System Variable" named Path by appending the path to your MinGW binaries to the end. For example, edit Path and append ";C:\MinGW\bin" .
+3) Using Command Prompt (cmd.exe), navigate to your Lost Marbles project that you checked out from Github, and stay in the directory that contains "Makefile" .
+4) Type "mingw32-make all" to build the project.

@@ -113,7 +113,7 @@ void DotLevelLoader::parseLevels(const String &FileName, std::vector<LevelInform
 	processLevels(XMLRoot, levels);
 }
 
-void DotLevelLoader::reloadNodesAndActors(const String &dotLevelFileName, const String &actorFileName, std::vector<std::string> &listToRestore, const String &groupName, SceneManager *yourSceneMgr, OgreBulletDynamics::DynamicsWorld *yourBulletWorld, std::map<String, Actor*> &actors, std::vector<CompetitorMarble*> &friends, std::vector<CompetitorMarble*> &rivals, std::vector<CollectibleMarble*> &targets, CompetitorMarble **focus)
+void DotLevelLoader::reloadNodesAndActors(const String &dotLevelFileName, const String &actorFileName, const std::vector<std::string> &listToRestore, const String &groupName, SceneManager *yourSceneMgr, OgreBulletDynamics::DynamicsWorld *yourBulletWorld, std::map<String, Actor*> &actors, std::vector<CompetitorMarble*> &friends, std::vector<CompetitorMarble*> &rivals, std::vector<CollectibleMarble*> &targets, CompetitorMarble **focus)
 {
 	// set up shared object values
 	m_sGroupName = groupName;

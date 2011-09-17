@@ -69,13 +69,14 @@ public:
 
 	void removeAllPowerUps()
 	{
-		for(std::map<String, IPowerUp*>::iterator i = mPowerUps.begin(); i != mPowerUps.end();)
+		for(std::map<String, IPowerUp*>::iterator i = mPowerUps.begin(); i != mPowerUps.end();++i)
 		{		
 			IPowerUp* p = i->second;
 			p->finish();
-			i = mPowerUps.erase(i);
 			delete p;
+			i->second = NULL;
 		}
+		mPowerUps.clear();
 	}
 
 	std::map<String, IPowerUp*> getListOfPowerUps()
@@ -107,29 +108,25 @@ public:
 		}*/
 		for(std::vector<IBehavior*>::iterator i = mBehavior.begin(); i != mBehavior.end();)
 		{
-			if((*i)->act(dt))
-			{
+			if((*i)->act(dt)) {
 				IBehavior* b = *i;
 				i = mBehavior.erase(i);
 				delete b;
-			}
-			else
-			{
+			} else {
 				i++;
 			}
 		}
-		for(std::map<String, IPowerUp*>::iterator i = mPowerUps.begin(); i != mPowerUps.end();)
+		std::map<String, IPowerUp*>::iterator i = mPowerUps.begin();
+		while(i != mPowerUps.end())
 		{
-			if(i->second->update(dt))
-			{
+			if(i->second->update(dt)) {
 				IPowerUp* p = i->second;
 				p->finish();
-				i = mPowerUps.erase(i);
 				delete p;
-			}
-			else
-			{
-				i++;
+				mPowerUps.erase(i);
+				i=mPowerUps.begin();
+			} else {
+				++i;
 			}
 		}
 	}

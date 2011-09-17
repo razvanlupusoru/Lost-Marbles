@@ -2,7 +2,6 @@
 #define LogoState_H
 
 #include <Ogre.h>
-#include "OgreCEGUIRenderer.h"
 #include "GameState.h"
 #include "MyGUI.h"
 #include "MyGUI_OgrePlatform.h"

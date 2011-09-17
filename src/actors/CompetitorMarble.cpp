@@ -166,7 +166,7 @@ std::string CompetitorMarble::takeAwayOneMarble()
 		return "";
 }
 
-std::vector<std::string> CompetitorMarble::getListOfCollectedMarbles()
+const std::vector<std::string>& CompetitorMarble::getListOfCollectedMarbles() const
 {
 	return mCollectedMarbles;
 }

@@ -273,27 +273,6 @@ namespace utils
 		return sqrt(sd);
 	}
 
-
-	template <class container>
-	inline void DeleteSTLContainer(container& c)
-	{
-		for (container::iterator it = c.begin(); it!=c.end(); ++it)
-		{
-			delete *it;
-			*it = NULL;
-		}
-	}
-
-	template <class map>
-	inline void DeleteSTLMap(map& m)
-	{
-		for (map::iterator it = m.begin(); it!=m.end(); ++it)
-		{
-			delete it->second;
-			it->second = NULL;
-		}
-	}
-
 	inline std::string get_env_var( std::string const & key ) {                                 
 		char * val;                                                                        
 		val = getenv( key.c_str() );                                                       

@@ -87,7 +87,7 @@ namespace Ogre
 		void parseLevels(const String &FileName, std::vector<LevelInformation> &levels);
 		void parseDotLevel(const String &SceneName, const String &groupName, SceneManager *yourSceneMgr, SceneNode *pAttachNode = NULL, const String &sPrependNode = "");
 		void parseActors(const String &FileName, const String &groupName, SceneManager *yourSceneMgr, OgreBulletDynamics::DynamicsWorld *yourBulletWorld, std::map<String, Actor*> &actors, std::vector<CompetitorMarble*> &friends, std::vector<CompetitorMarble*> &rivals, std::vector<CollectibleMarble*> &targets, CompetitorMarble **focus, SceneNode *pAttachNode = NULL, const String &sPrependNode = "");
-		void reloadNodesAndActors(const String &dotLevelFileName, const String &actorFileName, std::vector<std::string> &listToRestore, const String &groupName, SceneManager *yourSceneMgr, OgreBulletDynamics::DynamicsWorld *yourBulletWorld, std::map<String, Actor*> &actors, std::vector<CompetitorMarble*> &friends, std::vector<CompetitorMarble*> &rivals, std::vector<CollectibleMarble*> &targets, CompetitorMarble **focus);
+		void reloadNodesAndActors(const String &dotLevelFileName, const String &actorFileName, const std::vector<std::string> &listToRestore, const String &groupName, SceneManager *yourSceneMgr, OgreBulletDynamics::DynamicsWorld *yourBulletWorld, std::map<String, Actor*> &actors, std::vector<CompetitorMarble*> &friends, std::vector<CompetitorMarble*> &rivals, std::vector<CollectibleMarble*> &targets, CompetitorMarble **focus);
 		String getProperty(const String &ndNm, const String &prop);
 
 		std::vector<nodeProperty> nodeProperties;

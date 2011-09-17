@@ -450,5 +450,6 @@ void LogoState::resourceGroupLoadEnded(const String& groupName)
 }
 void LogoState::createSounds()
 {
-	mSoundMgr->MapSound("bgmLS", mSoundMgr->CreateStream(String("kirlianisles.mp3")));
+	String bgmLS("kirlianisles.mp3");
+	mSoundMgr->MapSound("bgmLS", mSoundMgr->CreateStream(bgmLS));
 }

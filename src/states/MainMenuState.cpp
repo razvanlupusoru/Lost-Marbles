@@ -504,8 +504,10 @@ bool MainMenuState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID i
 
 void MainMenuState::createSounds()
 {
-	mSoundMgr->MapSound("bgmMM", mSoundMgr->CreateLoopedStream(String("ruby_cactus.mp3")));
-	mSoundMgr->MapSound("hover", mSoundMgr->CreateStream(String("plop.wav")));
+	String bgmMM("ruby_cactus.mp3");
+	String hover("plop.wav");
+	mSoundMgr->MapSound("bgmMM", mSoundMgr->CreateLoopedStream(bgmMM));
+	mSoundMgr->MapSound("hover", mSoundMgr->CreateStream(hover));
 }
 
 

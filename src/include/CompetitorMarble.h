@@ -16,7 +16,7 @@ public:
 
 	void addCollectedMarble(const std::string & name);
 	std::string takeAwayOneMarble();
-	std::vector<std::string> getListOfCollectedMarbles();
+	const std::vector<std::string>& getListOfCollectedMarbles() const;
 
 	int mHealth;
 	bool mNeedsHelp;

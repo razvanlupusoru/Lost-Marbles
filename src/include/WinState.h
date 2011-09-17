@@ -31,7 +31,7 @@ public:
 protected:
 
 private:
-	void WinState::redoParticleSystems();
+	void redoParticleSystems();
 
 	Ogre::Root *mRoot;
 	Ogre::SceneNode *mCamNode;
