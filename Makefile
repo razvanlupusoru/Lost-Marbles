@@ -63,6 +63,25 @@ ogrebulletobjects = \
 	dependencies/OgreBullet/Dynamics/src/Constraints/OgreBulletDynamicsPoint2pointConstraint.o \
 	dependencies/OgreBullet/Dynamics/src/Constraints/OgreBulletDynamicsRaycastVehicle.o
 
+luabindobjects = \
+	dependencies/luabind/src/class.o \
+	dependencies/luabind/src/class_info.o \
+	dependencies/luabind/src/class_registry.o \
+	dependencies/luabind/src/class_rep.o \
+	dependencies/luabind/src/create_class.o \
+	dependencies/luabind/src/error.o \
+	dependencies/luabind/src/exception_handler.o \
+	dependencies/luabind/src/function.o \
+	dependencies/luabind/src/inheritance.o \
+	dependencies/luabind/src/link_compatibility.o \
+	dependencies/luabind/src/object_rep.o \
+	dependencies/luabind/src/open.o \
+	dependencies/luabind/src/pcall.o \
+	dependencies/luabind/src/scope.o \
+	dependencies/luabind/src/stack_content_by_name.o \
+	dependencies/luabind/src/weak_ref.o \
+	dependencies/luabind/src/wrapper_base.o
+
 lostmarblesobjects = \
 	src/main.o \
 	src/actors/BouncePowerUp.o \
@@ -101,19 +120,22 @@ ifeq ($(OS),windows)
 	RemoveObjectFiles=Clean.bat
 	LOSTMARBLESEXE=bin/LostMarbles.exe
 else
-	RemoveObjectFiles=rm -r $(objects) $(ogrebulletobjects)
+	RemoveObjectFiles=rm -r $(lostmarblesobjects) $(ogrebulletobjects) $(luabindobjects)
 	LOSTMARBLESEXE=bin/LostMarbles
 endif	
 
-all: $(ogrebulletobjects) $(lostmarblesobjects)
+all: $(lostmarblesobjects) $(ogrebulletobjects) $(luabindobjects)
 
-$(LOSTMARBLESEXE): $(lostmarblesobjects) $(ogrebulletobjects)
-	$(CC) $(CFLAGS) $(lostmarblesobjects) $(ogrebulletobjects) -o $@
+$(LOSTMARBLESEXE): $(lostmarblesobjects) $(ogrebulletobjects) $(luabindobjects)
+	$(CC) $(CFLAGS) $(lostmarblesobjects) $(ogrebulletobjects) $(luabindobjects) -o $@
 
 $(ogrebulletobjects): %.o: %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(lostmarblesobjects): %.o: %.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(luabindobjects): %.o: %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
 .PHONY : clean
