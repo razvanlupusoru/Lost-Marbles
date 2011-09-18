@@ -25,6 +25,7 @@
 #include "rapidxml_utils.hpp"
 #include "rapidxml_print.hpp"
 #include "utils.h"
+#include "lualib.h"
 
 #include <iostream>
 #include <fstream>

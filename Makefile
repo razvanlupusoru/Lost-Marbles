@@ -15,7 +15,7 @@ INCLUDEFLAGS= \
 	-Idependencies/fmod/include \
 	-Idependencies/Hydrax/include \
 	-Idependencies/lua/include \
-	-I/dependencies/luabind \
+	-Idependencies/luabind/include \
 	-Idependencies/MyGUI/MyGUIEngine/include \
 	-Idependencies/MyGUI/Platforms/Ogre/OgrePlatform/include \
 	-Idependencies/OIS \
