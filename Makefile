@@ -1,18 +1,26 @@
+# Settings
 CC=g++
 AR=ar
 CFLAGS=-O3
 DEBUG=false
 OS=windows
-INCLUDEFLAGS=-Idependencies -Idependencies/Bullet -Idependencies/OGRE -Idependencies/OgreBullet/Collisions/include -Idependencies/OgreBullet/Dynamics/include -Idependencies/fmod/include -Idependencies/Hydrax/include -Idependencies/lua/include -I/dependencies/luabind -Idependencies/MyGUI/MyGUIEngine/include -Idependencies/MyGUI/Platforms/Ogre/OgrePlatform/include -Idependencies/OIS -Isrc/include
-CFLAGS += $(INCLUDEFLAGS)
+# End Settings
 
-ifeq ($(OS),windows)
-	RM=del /q
-	LOSTMARBLESEXE=bin/LostMarbles.exe
-else
-	RM=rm -r
-	LOSTMARBLESEXE=bin/LostMarbles
-endif
+INCLUDEFLAGS= \
+	-Idependencies \
+	-Idependencies/Bullet \
+	-Idependencies/OGRE \
+	-Idependencies/OgreBullet/Collisions/include \
+	-Idependencies/OgreBullet/Dynamics/include \
+	-Idependencies/fmod/include \
+	-Idependencies/Hydrax/include \
+	-Idependencies/lua/include \
+	-I/dependencies/luabind \
+	-Idependencies/MyGUI/MyGUIEngine/include \
+	-Idependencies/MyGUI/Platforms/Ogre/OgrePlatform/include \
+	-Idependencies/OIS \
+	-Isrc/include
+CFLAGS += $(INCLUDEFLAGS)
 
 ifeq ($(DEBUG),true)
 	CFLAGS += -g -DLostMarblesDebug
@@ -88,18 +96,19 @@ lostmarblesobjects = \
 	src/states/PlayState.o \
 	src/states/QuitGameState.o \
 	src/states/WinState.o
-	
-objects = \
-	lib/libogrebullet.a \
-	$(lostmarblesobjects)
 
-all: $(objects)
+ifeq ($(OS),windows)
+	RemoveObjectFiles=Clean.bat
+	LOSTMARBLESEXE=bin/LostMarbles.exe
+else
+	RemoveObjectFiles=rm -r $(objects) $(ogrebulletobjects)
+	LOSTMARBLESEXE=bin/LostMarbles
+endif	
 
-$(LOSTMARBLESEXE): lib/libogrebullet.a $(lostmarblesobjects)
-	$(CC) $(CFLAGS) $(mainobjects) -Llib -lmean -o $@
+all: $(ogrebulletobjects) $(lostmarblesobjects)
 
-lib/libogrebullet.a: $(ogrebulletobjects)
-	$(AR) rcs $@ $(ogrebulletobjects)
+$(LOSTMARBLESEXE): $(lostmarblesobjects) $(ogrebulletobjects)
+	$(CC) $(CFLAGS) $(lostmarblesobjects) $(ogrebulletobjects) -o $@
 
 $(ogrebulletobjects): %.o: %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -109,5 +118,5 @@ $(lostmarblesobjects): %.o: %.cpp
 
 .PHONY : clean
 clean :
-	$(RM) $(objects) $(ogrebulletobjects)
+	$(RemoveObjectFiles) 
 
