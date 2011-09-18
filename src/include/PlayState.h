@@ -15,10 +15,6 @@
 #include "PauseState.h"
 #include "DotLevelLoader.h"
 
-#include "Hydrax.h"
-#include "Noise/Perlin/Perlin.h"
-#include "Modules/ProjectedGrid/ProjectedGrid.h"
-
 class PlayState : public GameState
 {
 public:
@@ -81,15 +77,10 @@ private:
 	void createScene();
 	void clearScene();
 	void restoreActors(const std::vector<std::string> &listOfNames);
-	void loadHydrax();
 	void resetIndicator();
 	void alterPlayState(Mode);
 	void createSounds();
 	void pauseGame();
-
-	Hydrax::Hydrax *mHydrax;
-	String mHydraxConfig;
-	bool mLastFrameUnderwater;
 
 	OgreBulletDynamics::DynamicsWorld *mWorld;
 	OgreBulletCollisions::DebugDrawer *mDebugDrawer;

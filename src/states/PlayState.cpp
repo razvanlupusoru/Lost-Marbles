@@ -58,8 +58,6 @@ void PlayState::enter()
 	mFriendLastScore = 0;
 	mRivalLastScore = 0;
 	firstConsoleInit = true;
-	mHydrax = 0;
-	mLastFrameUnderwater = false;
 	
 	Ogre::ShadowTextureManager::getSingletonPtr()->clear();
 	mSceneMgr = mRoot->createSceneManager(Ogre::ST_EXTERIOR_CLOSE, "Default SceneManager");
@@ -71,8 +69,6 @@ void PlayState::enter()
 
 	mViewport = mRoot->getAutoCreatedWindow()->addViewport(mCamera);
 	mViewport->setBackgroundColour(ColourValue(0.0, 0.0, 0.0));
-
-	loadHydrax();
 
 	initGUI();
 
@@ -99,7 +95,6 @@ void PlayState::resetLevel()
 	clearScene();
 	createScene();
 	resetIndicator();
-	loadHydrax();
 	if(!mLevels[mCurrentLevel].music.empty())
 		mSoundMgr->PlaySound(mLevels[mCurrentLevel].music, NULL, &mSoundMgr->mBgmChannel);
 }
@@ -515,51 +510,6 @@ void PlayState::createScene()
 	
 }
 
-void PlayState::loadHydrax()
-{
-	rapidxml::xml_document<> XMLDocDotLevel;
-	DotLevelLoader::FileLocator * fileLocator = (DotLevelLoader::FileLocator * )Ogre::ResourceGroupManager::getSingletonPtr();
-	String filename = mLevels[mCurrentLevel].filename+".level";
-	Ogre::Archive* fileArchive = fileLocator->Find(filename);
-	rapidxml::file<> dotlevelfile(filename.c_str());
-	XMLDocDotLevel.parse<0>( dotlevelfile.data() );
-	rapidxml::xml_node<>* pElement;
-	pElement = XMLDocDotLevel.first_node("scene")->first_node("environment")->first_node("hydrax");
-	if(pElement)
-	{
-		mSceneMgr->setShadowTechnique(SHADOWTYPE_NONE);
-
-		mHydrax = new Hydrax::Hydrax(mSceneMgr, mCamera, mViewport);
-
-		// Create our projected grid module  
-		Hydrax::Module::ProjectedGrid *mModule 
-			= new Hydrax::Module::ProjectedGrid(// Hydrax parent pointer
-												mHydrax,
-												// Noise module
-												new Hydrax::Noise::Perlin(/*Generic one*/),
-												// Base plane
-												Ogre::Plane(Ogre::Vector3::UNIT_Y, Ogre::Real(0.0f)),
-												// Normal mode
-												Hydrax::MaterialManager::NM_VERTEX,
-												// Projected grid options
-												Hydrax::Module::ProjectedGrid::Options(/*264 /*Generic one*/));
-
-		// Set our module
-		mHydrax->setModule(static_cast<Hydrax::Module::Module*>(mModule));
-
-		mHydraxConfig = "config";
-		mHydraxConfig = pElement->first_attribute(mHydraxConfig.c_str())->value();
-		mHydrax->loadCfg(mHydraxConfig);
-		
-		mHydrax->create();
-	}
-	else
-	{
-		mSceneMgr->setShadowTechnique(SHADOWTYPE_STENCIL_ADDITIVE);
-	}
-}
-
-
 void PlayState::loadHelpLayout(const std::string & layoutFile)
 {
 	if(mHelpLayout.empty())
@@ -579,13 +529,6 @@ void PlayState::clearScene()
 	mTransitionRotate=0;
 	mTransitionHeight=50;
 	mTransitionRadius=50;
-
-	if(mHydrax)
-	{
-		mHydrax->remove();
-		delete mHydrax;
-		mHydrax = 0;
-	}
 
 	Ogre::ShadowTextureManager::getSingletonPtr()->clear();
 	mSceneMgr->clearScene();
@@ -643,8 +586,6 @@ void PlayState::exit()
 
 void PlayState::pause()
 {
-	if(mHydrax)
-		mHydrax->remove();
 	mConsoleWindow->setVisibleSmooth(false); // Keeping this to keep console history after resuming from pause
 
 	if(!mHelpLayout.empty())
@@ -666,13 +607,6 @@ void PlayState::pause()
 void PlayState::resume()
 {
 	mViewport = mRoot->getAutoCreatedWindow()->addViewport(mCamera);
-	if(mHydrax)
-	{
-		mHydrax->setViewport(mViewport);
-		mHydrax->setCamera(mCamera);
-		mHydrax->loadCfg(mHydraxConfig);
-		mHydrax->create();
-	}
 	mGUI = 0;
 	initGUI();
 }
@@ -844,26 +778,6 @@ bool PlayState::frameStarted(const FrameEvent& evt)
 	else if (mCurrentState == PlayState::NORMAL)
 	{
 		mWorld->stepSimulation(evt.timeSinceLastFrame, 10);
-		if(mHydrax)
-		{
-			mHydrax->update(evt.timeSinceLastFrame);
-			/*if(mHydrax->_isCurrentFrameUnderwater())
-			{
-				if(!mLastFrameUnderwater)
-				{
-					mFocusActor->addPowerUp("Underwater",new UnderwaterBehavior(mFocusActor));
-				}
-				mLastFrameUnderwater = true;
-			}
-			else
-			{
-				if(mLastFrameUnderwater)
-				{
-					// TODO Remove the underwater behavior here
-				}
-				mLastFrameUnderwater = false;
-			}*/
-		}
 
 		std::map<String, Actor*>::iterator i = mActors.begin();
 		while(i != mActors.end()) {
