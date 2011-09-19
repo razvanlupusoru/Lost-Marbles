@@ -46,8 +46,8 @@ bool CompetitorMarble::onCollision(CompetitorMarble *otherActor, btManifoldPoint
 	{
 		int soundChannel = -1;
 		mSoundMgr->PlaySound("collide", mBodyNode, &soundChannel);
-		FMOD::Channel *channel= mSoundMgr->GetSoundChannel(soundChannel);
-		channel->setVolume(Math::Abs(speed)/50.0);
+		FMOD_CHANNEL *channel= mSoundMgr->GetSoundChannel(soundChannel);
+		FMOD_Channel_SetVolume(channel,Math::Abs(speed)/50.0);
 	}
 
 	return false;
@@ -75,8 +75,8 @@ bool CompetitorMarble::onCollision(StaticActor *otherActor, btManifoldPoint& cp)
 	{
 		int soundChannel = -1;
 		mSoundMgr->PlaySound("drop", mBodyNode, &soundChannel);
-		FMOD::Channel *channel= mSoundMgr->GetSoundChannel(soundChannel);
-		channel->setVolume(speed/40.0);
+		FMOD_CHANNEL *channel= mSoundMgr->GetSoundChannel(soundChannel);
+		FMOD_Channel_SetVolume(channel,speed/40.0);
 		mDropSoundTimer.reset();
 	}
 
@@ -101,9 +101,9 @@ bool CompetitorMarble::onCollision(StaticActor *otherActor, btManifoldPoint& cp)
 		mSoundMgr->StopSound(&mRollChannel);
 		mRolling = false;
 	}
-	FMOD::Channel *channel= mSoundMgr->GetSoundChannel(mRollChannel);
-	channel->setVolume(mSpeedAvg/15.0);
-	channel->setFrequency(Math::Sqrt(mSpeedAvg)*13000.0);
+	FMOD_CHANNEL *channel= mSoundMgr->GetSoundChannel(mRollChannel);
+	FMOD_Channel_SetVolume(channel,mSpeedAvg/15.0);
+	FMOD_Channel_SetFrequency(channel,Math::Sqrt(mSpeedAvg)*13000.0);
 	return false;
 }
 
@@ -128,8 +128,8 @@ void CompetitorMarble::update(float dt)
 	}
 	if(mTimer.getMilliseconds()>60.0)
 	{
-		FMOD::Channel *channel= mSoundMgr->GetSoundChannel(mRollChannel);
-		channel->setVolume(0.0);
+		FMOD_CHANNEL *channel= mSoundMgr->GetSoundChannel(mRollChannel);
+		FMOD_Channel_SetVolume(channel,0.0);
 	}
 	if(mTimer.getMilliseconds()>1000.0/60.0)
 	{

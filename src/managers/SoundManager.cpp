@@ -84,8 +84,10 @@ SoundManager::~SoundManager()
 		delete soundInstanceVector->at(vectorIndex);
 	}
 	delete soundInstanceVector;
-	if (system)
-		system->release();
+	if (system) {
+		FMOD_System_Release(system);
+		system = NULL;
+	}
 }
 
 void SoundManager::Initialize(void)
@@ -94,22 +96,23 @@ void SoundManager::Initialize(void)
 	FMOD_RESULT result;
 	bool soundDeviceExists = true;
 	// Create the main system object.
-	result = FMOD::System_Create(&system);
+	result = FMOD_System_Create(&system);
 	if (result != FMOD_OK)
 	{
 		//OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "FMOD error! (" + StringConverter::toString(result) + "): " + FMOD_ErrorString(result), "SoundManager::Initialize");
 		soundDeviceExists = false;
 	}
 
-	result = system->init(MAX_SOUND_CHANNELS, FMOD_INIT_NORMAL, 0);    // Initialize FMOD.
+	result = FMOD_System_Init(system,MAX_SOUND_CHANNELS, FMOD_INIT_NORMAL, 0); // Initialize FMOD.
 	if (result != FMOD_OK)
 	{
 		//OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "FMOD error! (" + StringConverter::toString(result) + "): " + FMOD_ErrorString(result), "SoundManager::Initialize");
 		soundDeviceExists = false;
 	}
-	system->set3DSettings(DOPPLER_SCALE, DISTANCE_FACTOR, ROLLOFF_SCALE);
+	
+	FMOD_System_Set3DSettings(system,DOPPLER_SCALE, DISTANCE_FACTOR, ROLLOFF_SCALE);
 
-	result = system->setFileSystem(&fmodFileOpenCallback, &fmodFileCloseCallback, &fmodFileReadCallback, &fmodFileSeekCallback, 0, 0, 2048);
+	result = FMOD_System_SetFileSystem(system,&fmodFileOpenCallback, &fmodFileCloseCallback, &fmodFileReadCallback, &fmodFileSeekCallback, 0, 0, 2048);
 	if (result != FMOD_OK)
 	{
 		//OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "FMOD error! (" + StringConverter::toString(result) + "): " + FMOD_ErrorString(result), "SoundManager::Initialize");
@@ -117,22 +120,22 @@ void SoundManager::Initialize(void)
 	}
 	if(soundDeviceExists)
 	{
-		FMOD_RESULT res = system->createChannelGroup("Effect Group", &mEffectChannelGroup);
-		res = system->createChannelGroup("Other Effect Group", &mOtherEffectChannelGroup);
-		res = system->createChannelGroup("Music Group", &mMusicChannelGroup);
-		res = system->createChannelGroup("Pause State Group", &mPauseStateChannelGroup);
-		res = system->getMasterChannelGroup(&mMasterChannelGroup);
+		FMOD_RESULT res = FMOD_System_CreateChannelGroup(system,"Effect Group", &mEffectChannelGroup);
+		res = FMOD_System_CreateChannelGroup(system,"Other Effect Group", &mOtherEffectChannelGroup);
+		res = FMOD_System_CreateChannelGroup(system,"Music Group", &mMusicChannelGroup);
+		res = FMOD_System_CreateChannelGroup(system,"Pause State Group", &mPauseStateChannelGroup);
+		res = FMOD_System_GetMasterChannelGroup(system,&mMasterChannelGroup);
 		Ogre::LogManager::getSingleton().logMessage("SoundManager Initialized");
 
-		res = mMasterChannelGroup->addGroup(mEffectChannelGroup);
-		res = mMasterChannelGroup->addGroup(mMusicChannelGroup);
-		res = mEffectChannelGroup->addGroup(mPauseStateChannelGroup);
-		res = mEffectChannelGroup->addGroup(mOtherEffectChannelGroup);
+		res = FMOD_ChannelGroup_AddGroup(mMasterChannelGroup,mEffectChannelGroup);
+		res = FMOD_ChannelGroup_AddGroup(mMasterChannelGroup,mMusicChannelGroup);
+		res = FMOD_ChannelGroup_AddGroup(mEffectChannelGroup,mPauseStateChannelGroup);
+		res = FMOD_ChannelGroup_AddGroup(mEffectChannelGroup,mOtherEffectChannelGroup);
 	}
 	else
 	{
 		Ogre::LogManager::getSingleton().logMessage("SoundManager Failed: Sounds Disabled");
-		system->release();
+		FMOD_System_Release(system);
 		system = NULL;
 	}
 }
@@ -152,7 +155,7 @@ void SoundManager::FrameStarted(Ogre::SceneNode *listenerNode, Ogre::Real timeEl
 	if(!system)
 		return;
 	int            channelIndex;
-	FMOD::Channel *nextChannel;
+	FMOD_CHANNEL * nextChannel;
 	FMOD_VECTOR    listenerPosition;
 	FMOD_VECTOR    listenerForward;
 	FMOD_VECTOR    listenerUp;
@@ -189,8 +192,8 @@ void SoundManager::FrameStarted(Ogre::SceneNode *listenerNode, Ogre::Real timeEl
 	listenerVelocity.z = vectorVelocity.z;
 
 	// update 'ears'
-	system->set3DListenerAttributes(0, &listenerPosition, &listenerVelocity, &listenerForward, &listenerUp);
-	system->update();
+	FMOD_System_Set3DListenerAttributes(system,0, &listenerPosition, &listenerVelocity, &listenerForward, &listenerUp);
+	FMOD_System_Update(system);
 
 	prevListenerPosition = listenerNode->_getDerivedPosition();
 
@@ -198,7 +201,7 @@ void SoundManager::FrameStarted(Ogre::SceneNode *listenerNode, Ogre::Real timeEl
 	{
 		if (channelArray[channelIndex].sceneNode != NULL)
 		{
-			system->getChannel(channelIndex, &nextChannel);
+			FMOD_System_GetChannel(system, channelIndex, &nextChannel);
 			if (timeElapsed > 0)
 				vectorVelocity = (channelArray[channelIndex].sceneNode->_getDerivedPosition() - channelArray[channelIndex].prevPosition) / timeElapsed;
 			else
@@ -212,7 +215,7 @@ void SoundManager::FrameStarted(Ogre::SceneNode *listenerNode, Ogre::Real timeEl
 			listenerVelocity.y = vectorVelocity.y;
 			listenerVelocity.z = vectorVelocity.z;
 
-			nextChannel->set3DAttributes(&listenerPosition, &listenerVelocity);
+			FMOD_Channel_Set3DAttributes(nextChannel,&listenerPosition, &listenerVelocity);
 			channelArray[channelIndex].prevPosition = channelArray[channelIndex].sceneNode->_getDerivedPosition();
 		}
 	}
@@ -294,7 +297,7 @@ int SoundManager::CreateSound(String &fileName, SOUND_TYPE soundType)
 		return -1;
 	Archive *      fileArchive;
 	FMOD_RESULT    result;
-	FMOD::Sound *  sound;
+	FMOD_SOUND *   sound;
 	String         fullPathName;
 	SoundInstance *newSoundInstance;
 
@@ -322,25 +325,25 @@ int SoundManager::CreateSound(String &fileName, SOUND_TYPE soundType)
 	{
 	case SOUND_TYPE_3D_SOUND:
 		{
-			result = system->createSound((const char *)newSoundInstance, FMOD_3D | FMOD_HARDWARE, 0, &sound);
+			result = FMOD_System_CreateSound(system,(const char *)newSoundInstance, FMOD_3D | FMOD_HARDWARE, 0, &sound);
 			break;
 		}
 
 	case SOUND_TYPE_3D_SOUND_LOOPED:
 		{
-			result = system->createSound((const char *)newSoundInstance, FMOD_LOOP_NORMAL | FMOD_3D | FMOD_HARDWARE, 0, &sound);
+			result = FMOD_System_CreateSound(system,(const char *)newSoundInstance, FMOD_LOOP_NORMAL | FMOD_3D | FMOD_HARDWARE, 0, &sound);
 			break;
 		}
 
 	case SOUND_TYPE_2D_SOUND:
 		{
-			result = system->createStream((const char *)newSoundInstance, FMOD_DEFAULT, 0, &sound);
+			result = FMOD_System_CreateStream(system,(const char *)newSoundInstance, FMOD_DEFAULT, 0, &sound);
 			break;
 		}
 
 	case SOUND_TYPE_2D_SOUND_LOOPED:
 		{
-			result = system->createStream((const char *)newSoundInstance, FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE, 0, &sound);
+			result = FMOD_System_CreateStream(system,(const char *)newSoundInstance, FMOD_LOOP_NORMAL | FMOD_2D | FMOD_HARDWARE, 0, &sound);
 			break;
 		}
 
@@ -409,7 +412,7 @@ void SoundManager::PlaySound(int soundIndex, SceneNode *soundNode, int *channelI
 	int            channelIndexTemp;
 	FMOD_RESULT    result;
 	FMOD_VECTOR    initialPosition;
-	FMOD::Channel *channel;
+	FMOD_CHANNEL * channel;
 	SoundInstance *soundInstance;
 
 	if (soundIndex == INVALID_SOUND_INDEX)
@@ -425,20 +428,20 @@ void SoundManager::PlaySound(int soundIndex, SceneNode *soundNode, int *channelI
 	// If the channelIndex already has a sound assigned to it, test if it's the same sceneNode.
 	if ((channelIndexTemp != INVALID_SOUND_CHANNEL) && (channelArray[channelIndexTemp].sceneNode != NULL))
 	{
-		result = system->getChannel(channelIndexTemp, &channel);
+		result = FMOD_System_GetChannel(system,channelIndexTemp, &channel);
 		if (result == FMOD_OK)
 		{
-			bool isPlaying;
+			FMOD_BOOL isPlaying;
 
-			result = channel->isPlaying(&isPlaying);
-			if ((result == FMOD_OK) && (isPlaying == true) && (channelArray[channelIndexTemp].sceneNode == soundNode))
+			result = FMOD_Channel_IsPlaying(channel,&isPlaying);
+			if ((result == FMOD_OK) && (isPlaying) && (channelArray[channelIndexTemp].sceneNode == soundNode))
 				return;  // Already playing this sound attached to this node.
 		}
 	}
 
 	soundInstance = soundInstanceVector->at(soundIndex);
 	// Start the sound paused
-	result = system->playSound(FMOD_CHANNEL_FREE, soundInstance->fmodSound, true, &channel);
+	result = FMOD_System_PlaySound(system,FMOD_CHANNEL_FREE, soundInstance->fmodSound, true, &channel);
 	if (result != FMOD_OK)
 	{
 		Ogre::LogManager::getSingleton().logMessage(String("SoundManager::PlaySound could not play sound  FMOD Error:") + FMOD_ErrorString(result));
@@ -447,7 +450,7 @@ void SoundManager::PlaySound(int soundIndex, SceneNode *soundNode, int *channelI
 		return;
 	}
 
-	channel->getIndex(&channelIndexTemp);
+	FMOD_Channel_GetIndex(channel,&channelIndexTemp);
 	channelArray[channelIndexTemp].sceneNode = soundNode;
 
 	if (soundNode)
@@ -457,11 +460,11 @@ void SoundManager::PlaySound(int soundIndex, SceneNode *soundNode, int *channelI
 		initialPosition.x = soundNode->_getDerivedPosition().x;
 		initialPosition.y = soundNode->_getDerivedPosition().y;
 		initialPosition.z = soundNode->_getDerivedPosition().z;
-		channel->set3DAttributes(&initialPosition, NULL);
+		FMOD_Channel_Set3DAttributes(channel,&initialPosition, NULL);
 	}
-	result = channel->setVolume(1.0);
+	result = FMOD_Channel_SetVolume(channel,1.0);
 	// This is where the sound really starts.
-	result = channel->setPaused(false);
+	result = FMOD_Channel_SetPaused(channel,false);
 
 	if (channelIndex)
 		*channelIndex = channelIndexTemp;
@@ -475,7 +478,7 @@ void SoundManager::PlaySound(String name, SceneNode *soundNode, int *channelInde
 	int			   soundIndex;
 	FMOD_RESULT    result;
 	FMOD_VECTOR    initialPosition;
-	FMOD::Channel *channel;
+	FMOD_CHANNEL * channel;
 	SoundInstance *soundInstance;
 
 	soundIndex = GetSound(name);
@@ -493,27 +496,27 @@ void SoundManager::PlaySound(String name, SceneNode *soundNode, int *channelInde
 	// If the channelIndex already has a sound assigned to it, test if it's the same sceneNode.
 	if ((channelIndexTemp != INVALID_SOUND_CHANNEL) && (channelArray[channelIndexTemp].sceneNode != NULL))
 	{
-		result = system->getChannel(channelIndexTemp, &channel);
+		result = FMOD_System_GetChannel(system,channelIndexTemp, &channel);
 		if (result == FMOD_OK)
 		{
-			bool isPlaying;
+			FMOD_BOOL isPlaying;
 
-			result = channel->isPlaying(&isPlaying);
-			if ((result == FMOD_OK) && (isPlaying == true) && (channelArray[channelIndexTemp].sceneNode == soundNode))
+			result = FMOD_Channel_IsPlaying(channel,&isPlaying);
+			if ((result == FMOD_OK) && (isPlaying) && (channelArray[channelIndexTemp].sceneNode == soundNode))
 				return;  // Already playing this sound attached to this node.
 		}
 	}
 
 	soundInstance = soundInstanceVector->at(soundIndex);
 	// Start the sound paused
-	result = system->playSound(FMOD_CHANNEL_FREE, soundInstance->fmodSound, true, &channel);
+	result = FMOD_System_PlaySound(system,FMOD_CHANNEL_FREE, soundInstance->fmodSound, true, &channel);
 
 	if(name.substr(0,3).compare("bgm")==0)
-		channel->setChannelGroup(mMusicChannelGroup);
+		FMOD_Channel_SetChannelGroup(channel,mMusicChannelGroup);
 	else if(name.compare("pause")==0)
-		channel->setChannelGroup(mPauseStateChannelGroup);
+		FMOD_Channel_SetChannelGroup(channel,mPauseStateChannelGroup);
 	else
-		channel->setChannelGroup(mOtherEffectChannelGroup);
+		FMOD_Channel_SetChannelGroup(channel,mOtherEffectChannelGroup);
 
 	if (result != FMOD_OK)
 	{
@@ -523,7 +526,7 @@ void SoundManager::PlaySound(String name, SceneNode *soundNode, int *channelInde
 		return;
 	}
 
-	channel->getIndex(&channelIndexTemp);
+	FMOD_Channel_GetIndex(channel,&channelIndexTemp);
 	channelArray[channelIndexTemp].sceneNode = soundNode;
 
 	if (soundNode)
@@ -533,11 +536,11 @@ void SoundManager::PlaySound(String name, SceneNode *soundNode, int *channelInde
 		initialPosition.x = soundNode->_getDerivedPosition().x;
 		initialPosition.y = soundNode->_getDerivedPosition().y;
 		initialPosition.z = soundNode->_getDerivedPosition().z;
-		channel->set3DAttributes(&initialPosition, NULL);
+		FMOD_Channel_Set3DAttributes(channel,&initialPosition, NULL);
 	}
-	result = channel->setVolume(1.0);
+	result = FMOD_Channel_SetVolume(channel,1.0);
 	// This is where the sound really starts.
-	result = channel->setPaused(false);
+	result = FMOD_Channel_SetPaused(channel,false);
 
 	if (channelIndex)
 		*channelIndex = channelIndexTemp;
@@ -548,45 +551,45 @@ SoundInstance *SoundManager::GetSoundInstance(int soundIndex)
 	return soundInstanceVector->at(soundIndex);
 }
 
-FMOD::Channel *SoundManager::GetSoundChannel(int channelIndex)
+FMOD_CHANNEL *SoundManager::GetSoundChannel(int channelIndex)
 {
 	if(!system)
 		return NULL;
 	if (channelIndex == INVALID_SOUND_CHANNEL)
 		return NULL;
 
-	FMOD::Channel *soundChannel;
+	FMOD_CHANNEL *soundChannel;
 
 	assert((channelIndex > 0) && (channelIndex < MAX_SOUND_CHANNELS));
 
-	system->getChannel(channelIndex, &soundChannel);
+	FMOD_System_GetChannel(system,channelIndex, &soundChannel);
 	return soundChannel;
 }
 
 void SoundManager::Set3DMinMaxDistance(int channelIndex, float minDistance, float maxDistance)
 {
 	FMOD_RESULT    result;
-	FMOD::Channel *channel;
+	FMOD_CHANNEL *channel;
 
 	if (channelIndex == INVALID_SOUND_CHANNEL)
 		return;
 
-	result = system->getChannel(channelIndex, &channel);
+	result = FMOD_System_GetChannel(system,channelIndex, &channel);
 	if (result == FMOD_OK)
-		channel->set3DMinMaxDistance(minDistance, maxDistance);
+		FMOD_Channel_Set3DMinMaxDistance(channel,minDistance, maxDistance);
 }
 
 void SoundManager::StopAllSounds(void)
 {
 	int            channelIndex;
 	FMOD_RESULT    result;
-	FMOD::Channel *nextChannel;
+	FMOD_CHANNEL *nextChannel;
 
 	for (channelIndex = 0; channelIndex < MAX_SOUND_CHANNELS; channelIndex++)
 	{
-		result = system->getChannel(channelIndex, &nextChannel);
+		result = FMOD_System_GetChannel(system,channelIndex, &nextChannel);
 		if ((result == FMOD_OK) && (nextChannel != NULL))
-			nextChannel->stop();
+			FMOD_Channel_Stop(nextChannel);
 		channelArray[channelIndex].Clear();
 	}
 }
@@ -596,12 +599,12 @@ void SoundManager::StopSound(int *channelIndex)
 	if (*channelIndex == INVALID_SOUND_CHANNEL)
 		return;
 
-	FMOD::Channel *soundChannel;
+	FMOD_CHANNEL *soundChannel;
 
 	assert((*channelIndex > 0) && (*channelIndex < MAX_SOUND_CHANNELS));
 
-	system->getChannel(*channelIndex, &soundChannel);
-	soundChannel->stop();
+	FMOD_System_GetChannel(system,*channelIndex, &soundChannel);
+	FMOD_Channel_Stop(soundChannel);
 
 	channelArray[*channelIndex].Clear();
 	*channelIndex = INVALID_SOUND_CHANNEL;
@@ -639,7 +642,7 @@ float SoundManager::GetSoundLength(int soundIndex)
 	soundInstance = soundInstanceVector->at(soundIndex);
 	if (soundInstance)
 	{
-		result = soundInstance->fmodSound->getLength(&soundLength, FMOD_TIMEUNIT_MS);
+		result = FMOD_Sound_GetLength(soundInstance->fmodSound,&soundLength, FMOD_TIMEUNIT_MS);
 		if (result != FMOD_OK)
 		{
 			Ogre::LogManager::getSingleton().logMessage(String("SoundManager::GetSoundLength could not get length  FMOD Error:") + FMOD_ErrorString(result));
@@ -659,31 +662,31 @@ void SoundManager::SetMute(bool mute)
 {
 	if(system)
 	{
-		mMasterChannelGroup->setMute(mute);
+		FMOD_ChannelGroup_SetMute(mMasterChannelGroup,int(mute));
 	}
 }
 
 bool SoundManager::isMuted(void)
 {
-	bool mute;
-	mMasterChannelGroup->getMute(&mute);
-	return mute;
+	FMOD_BOOL mute;
+	FMOD_ChannelGroup_GetMute(mMasterChannelGroup,&mute);
+	return bool(mute);
 }
 
 void SoundManager::TogglePause(void)
 {
 	if(system)
 	{
-		bool pause;
-		mOtherEffectChannelGroup->getPaused(&pause);
-		mOtherEffectChannelGroup->setPaused(!pause);
+		FMOD_BOOL pause;
+		FMOD_ChannelGroup_GetPaused(mOtherEffectChannelGroup,&pause);
+		FMOD_ChannelGroup_SetPaused(mOtherEffectChannelGroup,!pause);
 
 		float volume;
-		mMusicChannelGroup->getVolume(&volume);
+		FMOD_ChannelGroup_GetVolume(mMusicChannelGroup,&volume);
 		if(pause)
-			mMusicChannelGroup->setVolume(volume*5.0);
+			FMOD_ChannelGroup_SetVolume(mMusicChannelGroup,volume*5.0);
 		else
-			mMusicChannelGroup->setVolume(volume*0.2);
+			FMOD_ChannelGroup_SetVolume(mMusicChannelGroup,volume*0.2);
 	}
 }
 

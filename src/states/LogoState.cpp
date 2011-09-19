@@ -31,8 +31,8 @@ void LogoState::enter()
 	mCamera->setAspectRatio(Real(mViewport->getActualWidth()) / Real(mViewport->getActualHeight()));
 
 	mSoundMgr->PlaySound("bgmLS", NULL, &mSoundMgr->mBgmChannel);
-	FMOD::Channel *channel= mSoundMgr->GetSoundChannel(mSoundMgr->mBgmChannel);
-	channel->setVolume(0.25);
+	FMOD_CHANNEL *channel= mSoundMgr->GetSoundChannel(mSoundMgr->mBgmChannel);
+	FMOD_Channel_SetVolume(channel,0.25);
 		
 	InputManager *mInputManager;
 	mInputManager = new InputManager(mRoot->getAutoCreatedWindow());

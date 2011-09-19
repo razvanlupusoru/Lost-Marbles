@@ -1,7 +1,7 @@
 #ifndef __SOUNDMANAGER_H__
 #define __SOUNDMANAGER_H__
 
-#include <fmod.hpp>
+#include <fmod.h>
 #include <Ogre.h>
 
 #define MAX_SOUND_CHANNELS       200
@@ -28,7 +28,7 @@ public:
 	Archive *      fileArchive;
 	DataStreamPtr  streamPtr;
 	SOUND_TYPE     soundType;
-	FMOD::Sound *  fmodSound;
+	FMOD_SOUND *  fmodSound;
 };
 
 class ChannelInstance
@@ -69,7 +69,7 @@ public:
 
 	float                GetSoundLength(int soundIndex);        // returns seconds
 	SoundInstance       *GetSoundInstance(int soundIndex);
-	FMOD::Channel       *GetSoundChannel(int channelIndex);
+	FMOD_CHANNEL       *GetSoundChannel(int channelIndex);
 
 	static SoundManager& getSingleton(void);
 	static SoundManager* getSingletonPtr(void);
@@ -77,10 +77,10 @@ public:
 	std::map<String, int> mSoundMap;
 
 	int mBgmChannel;
-	FMOD::ChannelGroup   *mEffectChannelGroup;
-	FMOD::ChannelGroup   *mOtherEffectChannelGroup;
-	FMOD::ChannelGroup   *mMusicChannelGroup;
-	FMOD::ChannelGroup	 *mPauseStateChannelGroup;
+	FMOD_CHANNELGROUP   *mEffectChannelGroup;
+	FMOD_CHANNELGROUP   *mOtherEffectChannelGroup;
+	FMOD_CHANNELGROUP   *mMusicChannelGroup;
+	FMOD_CHANNELGROUP	 *mPauseStateChannelGroup;
 	
 
 private:
@@ -88,11 +88,11 @@ private:
 	typedef SoundInstanceVector::iterator  SoundInstanceVectorItr;
 
 	int                  nextSoundInstanceIndex;
-	FMOD::System *       system;
+	FMOD_SYSTEM *       system;
 	Ogre::Vector3        prevListenerPosition;
 	SoundInstanceVector *soundInstanceVector;
 	ChannelInstance      channelArray[MAX_SOUND_CHANNELS];
-	FMOD::ChannelGroup   *mMasterChannelGroup;
+	FMOD_CHANNELGROUP   *mMasterChannelGroup;
 
 	void                 IncrementNextSoundInstanceIndex(void);
 

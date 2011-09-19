@@ -49,8 +49,8 @@ void MainMenuState::enter()
 		saveSounds();
 	}
 	mSoundMgr->SetMute(mMuted);
-	mSoundMgr->mMusicChannelGroup->setVolume((float)mMusicVolume/100.0);
-	mSoundMgr->mEffectChannelGroup->setVolume((float)mEffectVolume/100.0);
+	FMOD_ChannelGroup_SetVolume(mSoundMgr->mMusicChannelGroup,(float)mMusicVolume/100.0);
+	FMOD_ChannelGroup_SetVolume(mSoundMgr->mEffectChannelGroup,(float)mEffectVolume/100.0);
 	mVideoSettings.load(utils::getLostMarblesWriteDir()+"\\ogre.cfg","=:\t",false);
 	createSounds();
 
@@ -608,14 +608,14 @@ void MainMenuState::handleEffectSlider(MyGUI::WidgetPtr _sender, unsigned int _p
 {
 	MyGUI::HScrollPtr slider = MyGUI::castWidget<MyGUI::HScroll>(_sender);
 	mEffectVolume = slider->getScrollPosition();
-	mSoundMgr->mEffectChannelGroup->setVolume((float)mEffectVolume/100.0);
+	FMOD_ChannelGroup_SetVolume(mSoundMgr->mEffectChannelGroup,(float)mEffectVolume/100.0);
 }
 
 void MainMenuState::handleMusicSlider(MyGUI::WidgetPtr _sender, unsigned int _pos)
 {
 	MyGUI::HScrollPtr slider = MyGUI::castWidget<MyGUI::HScroll>(_sender);
 	mMusicVolume = slider->getScrollPosition();
-	mSoundMgr->mMusicChannelGroup->setVolume((float)mMusicVolume/100.0);
+	FMOD_ChannelGroup_SetVolume(mSoundMgr->mMusicChannelGroup,(float)mMusicVolume/100.0);
 }
 
 void MainMenuState::handleMuteSounds(MyGUI::WidgetPtr _sender)
