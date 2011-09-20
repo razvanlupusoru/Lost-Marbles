@@ -1,22 +1,14 @@
 #include <Ogre.h>
-#include <direct.h>
-
 #include "utils.h"
-
 #include "GameManager.h"
 #include "LogoState.h"
 
-#ifndef _DEBUG
-#define OGRE_THREAD_SUPPORT 1
-#endif
-
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-	#define WIN32_LEAN_AND_MEAN
-	#include "windows.h"
-
-	INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
+#include <windows.h>
+#include <direct.h>
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 #else
-	int main(int argc, char **argv)
+int main(int argc, char **argv)
 #endif
 {
 	srand(time(NULL));
