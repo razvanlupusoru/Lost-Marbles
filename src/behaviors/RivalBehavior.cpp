@@ -84,7 +84,7 @@ void RivalBehavior::wander()
 
 bool RivalBehavior::act(float dt)
 {
-	RunLuaScript(mLuaState,"../../media/lua_scripts/RivalBehavior.lua");
+	RunLuaScript(mLuaState,"../media/lua_scripts/RivalBehavior.lua");
 
 	try
 	{
