@@ -81,6 +81,7 @@ private:
 	void alterPlayState(Mode);
 	void createSounds();
 	void pauseGame();
+	void initPlayerCam();
 
 	OgreBulletDynamics::DynamicsWorld *mWorld;
 	OgreBulletCollisions::DebugDrawer *mDebugDrawer;

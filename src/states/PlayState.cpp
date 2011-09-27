@@ -69,6 +69,7 @@ void PlayState::enter()
 	createScene();
 
 	mViewport = mRoot->getAutoCreatedWindow()->addViewport(mCamera);
+	initPlayerCam();
 	mViewport->setBackgroundColour(ColourValue(0.0, 0.0, 0.0));
 
 	initGUI();
@@ -95,6 +96,7 @@ void PlayState::resetLevel()
 {
 	clearScene();
 	createScene();
+	initPlayerCam();
 	resetIndicator();
 	if(!mLevels[mCurrentLevel].music.empty())
 		mSoundMgr->PlaySound(mLevels[mCurrentLevel].music, NULL, &mSoundMgr->mBgmChannel);
@@ -161,6 +163,14 @@ bool PlayState::saveGame()
 	*/
 
 	return returnFlag;
+}
+
+void PlayState::initPlayerCam()
+{
+	mCamera->setNearClipDistance(1.0);
+	mCamera->setFarClipDistance(99999.0);
+	mCamera->setProjectionType(PT_PERSPECTIVE);
+	mCamera->setAspectRatio(Ogre::Real(mViewport->getActualWidth()) / Ogre::Real(mViewport->getActualHeight()));
 }
 
 void PlayState::initGUI()
@@ -457,8 +467,6 @@ void PlayState::createScene()
 
 	mNumTargets = mTargets.size();
 	mCamera = mSceneMgr->getCamera("PlayerCam");
-	mCamera->setNearClipDistance(1.0);
-	mCamera->setFarClipDistance(99999.0);
 	mCamNode = mSceneMgr->getSceneNode("PlayerCam");
 
 	if(mLoadSavedGame)
@@ -608,6 +616,7 @@ void PlayState::pause()
 void PlayState::resume()
 {
 	mViewport = mRoot->getAutoCreatedWindow()->addViewport(mCamera);
+	initPlayerCam();
 	mGUI = 0;
 	initGUI();
 }

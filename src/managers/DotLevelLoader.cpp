@@ -507,10 +507,10 @@ void DotLevelLoader::processCamera(rapidxml::xml_node<>* XMLNode, SceneNode *pPa
 	pElement = XMLNode->first_node("clipping");
 	if(pElement)
 	{
-		Real nearDist = getAttribReal(pElement, "near");
+		Real nearDist = getAttribReal(pElement, "near", 1.0);
 		pCamera->setNearClipDistance(nearDist);
 
-		Real farDist =  getAttribReal(pElement, "far");
+		Real farDist =  getAttribReal(pElement, "far", 99999.0);
 		pCamera->setFarClipDistance(farDist);
 	}
 
