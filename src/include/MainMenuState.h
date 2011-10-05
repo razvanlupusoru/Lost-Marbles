@@ -94,7 +94,7 @@ private:
 	MyGUI::VectorWidgetPtr mNewGameWindowLayout;
 	MyGUI::ButtonPtr mMuteCheckBox;
 
-	MyGUI::WidgetPtr* widgetNavigation;
+	MyGUI::WidgetPtr* mWidgetNavigation;
 	MyGUI::WidgetPtr* levelNavigation;
 	int mWidgetFocus;
 	int mLevelFocus;

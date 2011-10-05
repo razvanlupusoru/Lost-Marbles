@@ -103,8 +103,7 @@ void MainMenuState::enter()
 
 void MainMenuState::initializeGUI()
 {
-	widgetNavigation = NULL;
-	widgetNavigation = new MyGUI::WidgetPtr[4];
+	mWidgetNavigation = new MyGUI::WidgetPtr[4];
 
 	MyGUI::OgreRenderManager::getInstance().setSceneManager(mSceneMgr);
 	mGUI->setVisiblePointer(true);
@@ -112,27 +111,27 @@ void MainMenuState::initializeGUI()
 	mMainMenuLayout = MyGUI::LayoutManager::getInstance().loadLayout("MainMenu.layout");
 	mSettingsLayout = MyGUI::LayoutManager::getInstance().loadLayout("SettingsWindow.layout");
 	mCreditsLayout = MyGUI::LayoutManager::getInstance().loadLayout("Credits.layout");
-	mCreditsLayout = MyGUI::LayoutManager::getInstance().loadLayout("NewGameWindow.layout");
+	mNewGameWindowLayout = MyGUI::LayoutManager::getInstance().loadLayout("NewGameWindow.layout");
 
-	widgetNavigation[3] = mGUI->findWidget<MyGUI::StaticText>("ExitButton");
-	widgetNavigation[3]->eventMouseButtonClick = MyGUI::newDelegate(this, &MainMenuState::handleExitGameButton);
-	widgetNavigation[3]->eventMouseSetFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseSetFocusOnButton);
-	widgetNavigation[3]->eventMouseLostFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseLostFocusOnButton);
+	mWidgetNavigation[3] = mGUI->findWidget<MyGUI::StaticText>("ExitButton");
+	mWidgetNavigation[3]->eventMouseButtonClick = MyGUI::newDelegate(this, &MainMenuState::handleExitGameButton);
+	mWidgetNavigation[3]->eventMouseSetFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseSetFocusOnButton);
+	mWidgetNavigation[3]->eventMouseLostFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseLostFocusOnButton);
 	
-	widgetNavigation[1] = mGUI->findWidget<MyGUI::StaticText>("SettingsButton");
-	widgetNavigation[1]->eventMouseButtonClick = MyGUI::newDelegate(this, &MainMenuState::handleSettingsButton);
-	widgetNavigation[1]->eventMouseSetFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseSetFocusOnButton);
-	widgetNavigation[1]->eventMouseLostFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseLostFocusOnButton);
+	mWidgetNavigation[1] = mGUI->findWidget<MyGUI::StaticText>("SettingsButton");
+	mWidgetNavigation[1]->eventMouseButtonClick = MyGUI::newDelegate(this, &MainMenuState::handleSettingsButton);
+	mWidgetNavigation[1]->eventMouseSetFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseSetFocusOnButton);
+	mWidgetNavigation[1]->eventMouseLostFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseLostFocusOnButton);
 
-	widgetNavigation[0] = mGUI->findWidget<MyGUI::StaticText>("LoadGameButton");
-	widgetNavigation[0]->eventMouseButtonClick = MyGUI::newDelegate(this, &MainMenuState::handleLoadButton);
-	widgetNavigation[0]->eventMouseSetFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseSetFocusOnButton);
-	widgetNavigation[0]->eventMouseLostFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseLostFocusOnButton);
+	mWidgetNavigation[0] = mGUI->findWidget<MyGUI::StaticText>("LoadGameButton");
+	mWidgetNavigation[0]->eventMouseButtonClick = MyGUI::newDelegate(this, &MainMenuState::handleLoadButton);
+	mWidgetNavigation[0]->eventMouseSetFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseSetFocusOnButton);
+	mWidgetNavigation[0]->eventMouseLostFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseLostFocusOnButton);
 
-	widgetNavigation[2] = mGUI->findWidget<MyGUI::StaticText>("CreditsButton");
-	widgetNavigation[2]->eventMouseButtonClick = MyGUI::newDelegate(this, &MainMenuState::handleCreditsButton);
-	widgetNavigation[2]->eventMouseSetFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseSetFocusOnButton);
-	widgetNavigation[2]->eventMouseLostFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseLostFocusOnButton);
+	mWidgetNavigation[2] = mGUI->findWidget<MyGUI::StaticText>("CreditsButton");
+	mWidgetNavigation[2]->eventMouseButtonClick = MyGUI::newDelegate(this, &MainMenuState::handleCreditsButton);
+	mWidgetNavigation[2]->eventMouseSetFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseSetFocusOnButton);
+	mWidgetNavigation[2]->eventMouseLostFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseLostFocusOnButton);
 
 	MyGUI::WindowPtr window = mGUI->findWidget<MyGUI::Window>("SettingsWindow");
 	window->eventWindowButtonPressed = MyGUI::newDelegate(this, &MainMenuState::handleCancelWindow);
@@ -175,7 +174,7 @@ void MainMenuState::initializeGUI()
 		button->setStateCheck(false);
 
 	mWidgetFocus = 0;
-	setFocusWidget(widgetNavigation[mWidgetFocus]);	
+	setFocusWidget(mWidgetNavigation[mWidgetFocus]);	
 
 	button = mGUI->findWidget<MyGUI::Button>("SettingsWindow/SaveToFileButton");
 	button->eventMouseButtonClick = MyGUI::newDelegate(this, &MainMenuState::handleButtonPresses);
@@ -422,7 +421,7 @@ bool MainMenuState::keyPressed(const OIS::KeyEvent& e)
 	}
 	else if( e.key == OIS::KC_RETURN)
 	{
-		widgetNavigation[mWidgetFocus]->eventMouseButtonClick(widgetNavigation[mWidgetFocus]);
+		mWidgetNavigation[mWidgetFocus]->eventMouseButtonClick(mWidgetNavigation[mWidgetFocus]);
 	}
 	else if ( e.key == OIS::KC_UP || e.key == OIS::KC_W)
 	{
@@ -433,8 +432,8 @@ bool MainMenuState::keyPressed(const OIS::KeyEvent& e)
 		}
 		else
 		{
-			setFocusWidget(widgetNavigation[mWidgetFocus]);
-			lostFocusWidget(widgetNavigation[mWidgetFocus+1]);
+			setFocusWidget(mWidgetNavigation[mWidgetFocus]);
+			lostFocusWidget(mWidgetNavigation[mWidgetFocus+1]);
 		}
 	}
 	else if ( e.key == OIS::KC_DOWN || e.key == OIS::KC_S)
@@ -446,8 +445,8 @@ bool MainMenuState::keyPressed(const OIS::KeyEvent& e)
 		}
 		else 
 		{
-			setFocusWidget(widgetNavigation[mWidgetFocus]);
-			lostFocusWidget(widgetNavigation[mWidgetFocus-1]);
+			setFocusWidget(mWidgetNavigation[mWidgetFocus]);
+			lostFocusWidget(mWidgetNavigation[mWidgetFocus-1]);
 		}
 	}
 	return true;
@@ -557,13 +556,13 @@ void MainMenuState::handleMouseSetFocusOnButton(MyGUI::WidgetPtr _sender, MyGUI:
 	int i = 0;
 	for (i = 0; i < 4 ; i++)
 	{
-		if (widgetNavigation[i] == _sender)
+		if (mWidgetNavigation[i] == _sender)
 		{
 			mWidgetFocus = i;
 			setFocusWidget(_sender);
 		}
 		else
-			lostFocusWidget(widgetNavigation[i]);
+			lostFocusWidget(mWidgetNavigation[i]);
 	}
 }
 
