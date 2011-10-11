@@ -22,8 +22,8 @@ CFLAGS= \
 	-Idependencies/OIS \
 	-Isrc/include \
 	-Wall \
-	-DMYGUI_USE_FREETYPE
-	#-DOGRE_THREAD_SUPPORT
+	-DMYGUI_USE_FREETYPE \
+	-DOGRE_THREAD_SUPPORT=2
 
 ifeq ($(DEBUG),true)
 	CFLAGS += -g -DLostMarblesDebug -O1
