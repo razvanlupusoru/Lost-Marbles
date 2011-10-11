@@ -113,31 +113,39 @@ void MainMenuState::initializeGUI()
 	mCreditsLayout = MyGUI::LayoutManager::getInstance().loadLayout("Credits.layout");
 	mNewGameWindowLayout = MyGUI::LayoutManager::getInstance().loadLayout("NewGameWindow.layout");
 
+	mGUI->findWidget<MyGUI::StaticImage>("LogoImage")->setPosition(MyGUI::IntPoint((mViewport->getActualWidth()/2 - 512 + 72),40));
+
 	mWidgetNavigation[3] = mGUI->findWidget<MyGUI::StaticText>("ExitButton");
 	mWidgetNavigation[3]->eventMouseButtonClick = MyGUI::newDelegate(this, &MainMenuState::handleExitGameButton);
 	mWidgetNavigation[3]->eventMouseSetFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseSetFocusOnButton);
 	mWidgetNavigation[3]->eventMouseLostFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseLostFocusOnButton);
+	mWidgetNavigation[3]->setPosition(MyGUI::IntPoint((mViewport->getActualWidth()/2 - 512 + 472),566));
 	
 	mWidgetNavigation[1] = mGUI->findWidget<MyGUI::StaticText>("SettingsButton");
 	mWidgetNavigation[1]->eventMouseButtonClick = MyGUI::newDelegate(this, &MainMenuState::handleSettingsButton);
 	mWidgetNavigation[1]->eventMouseSetFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseSetFocusOnButton);
 	mWidgetNavigation[1]->eventMouseLostFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseLostFocusOnButton);
+	mWidgetNavigation[1]->setPosition(MyGUI::IntPoint((mViewport->getActualWidth()/2 - 512 + 428),362));
 
 	mWidgetNavigation[0] = mGUI->findWidget<MyGUI::StaticText>("LoadGameButton");
 	mWidgetNavigation[0]->eventMouseButtonClick = MyGUI::newDelegate(this, &MainMenuState::handleLoadButton);
 	mWidgetNavigation[0]->eventMouseSetFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseSetFocusOnButton);
 	mWidgetNavigation[0]->eventMouseLostFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseLostFocusOnButton);
+	mWidgetNavigation[0]->setPosition(MyGUI::IntPoint((mViewport->getActualWidth()/2 - 512 + 400),262));
 
 	mWidgetNavigation[2] = mGUI->findWidget<MyGUI::StaticText>("CreditsButton");
 	mWidgetNavigation[2]->eventMouseButtonClick = MyGUI::newDelegate(this, &MainMenuState::handleCreditsButton);
 	mWidgetNavigation[2]->eventMouseSetFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseSetFocusOnButton);
 	mWidgetNavigation[2]->eventMouseLostFocus = MyGUI::newDelegate(this, &MainMenuState::handleMouseLostFocusOnButton);
+	mWidgetNavigation[2]->setPosition(MyGUI::IntPoint((mViewport->getActualWidth()/2 - 512 + 438),464));
 
 	MyGUI::WindowPtr window = mGUI->findWidget<MyGUI::Window>("SettingsWindow");
 	window->eventWindowButtonPressed = MyGUI::newDelegate(this, &MainMenuState::handleCancelWindow);
+	window->setPosition(MyGUI::IntPoint((mViewport->getActualWidth()/2 - 512 + 126),250));
 
 	window = mGUI->findWidget<MyGUI::Window>("CreditsWindow");
 	window->eventWindowButtonPressed = MyGUI::newDelegate(this, &MainMenuState::handleCancelWindow);
+	window->setPosition(MyGUI::IntPoint((mViewport->getActualWidth()/2 - 512 + 126),136));
 
 	MyGUI::HScrollPtr effectSlider = mGUI->findWidget<MyGUI::HScroll>("SettingsWindow/AudioTab/EffectVolumeSlider");
 	effectSlider->eventScrollChangePosition = MyGUI::newDelegate(this, &MainMenuState::handleEffectSlider);
@@ -187,6 +195,7 @@ void MainMenuState::initializeGUI()
 	window->setCaption("Select Level");
 	window->setMaxSize(window->getWidth(), window->getHeight());
 	window->setMinSize(window->getWidth(), window->getHeight());
+	window->setPosition(MyGUI::IntPoint((mViewport->getActualWidth()/2 - 512 + 224),208));
 
 	MyGUI::WidgetPtr staticText;
 	char* textName = new char[6];
@@ -207,7 +216,6 @@ void MainMenuState::initializeGUI()
 		progIter.getNext();
 	}
 
-	levelNavigation = NULL;
 	ConfigFile cf;
 	cf.load(path,"=:\t",false);
 	std::string sectionProgress = "Progress";
@@ -218,7 +226,7 @@ void MainMenuState::initializeGUI()
 	for(int i=0; i<mLevels.size(); i++)
 	{
 		sprintf(textName,"Text%d",i);
-		levelNavigation[i] = mGUI->createWidget<MyGUI::StaticText>("StaticText", 10, i*40, window->getWidth(), 40, MyGUI::Align::Center, textName);
+		levelNavigation[i] = window->createWidget<MyGUI::StaticText>("StaticText", 10, i*40, window->getWidth(), 40, MyGUI::Align::Center, textName);
 		if(totalCollected < (mLevels.at(i).number-1)*3)
 		{
 			levelNavigation[i]->setEnabled(false);
@@ -232,7 +240,6 @@ void MainMenuState::initializeGUI()
 		}
 		
 		levelNavigation[i]->setFontName("font_Wasser.24");
-		levelNavigation[i]->attachToWidget(window);
 		levelNavigation[i]->setTextColour(MyGUI::Colour(0,0,0,1));
 		levelNavigation[i]->setColour(MyGUI::Colour(0,0,0,0));
 
@@ -246,22 +253,7 @@ void MainMenuState::initializeGUI()
 	}
 
 	mLevelFocus = 0;
-	setFocusWidget(levelNavigation[mLevelFocus]);	
-	window->setVisibleSmooth(true);
-	window->setVisibleSmooth(false);
-	
-	/*
-	common::VectorFileInfo infos;
-	std::string lostMarblesDir(utils::getLostMarblesWriteDir());
-	std::wstring lostMarblesDirWide;
-	lostMarblesDirWide.assign(lostMarblesDir.begin(), lostMarblesDir.end());
-	common::getSystemFileList(infos, lostMarblesDirWide, L"*.lost");
-	for(common::VectorFileInfo::iterator item=infos.begin(); item!=infos.end(); ++item)
-	{
-		if (!(*item).folder)
-			list->addItem((*item).name, *item);
-	}*/
-
+	setFocusWidget(levelNavigation[mLevelFocus]);
 }
 
 void MainMenuState::exit()
