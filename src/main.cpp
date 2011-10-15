@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "GameManager.h"
 #include "LogoState.h"
+#include <boost/filesystem.hpp>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #include <windows.h>
@@ -14,8 +15,8 @@ int main(int argc, char **argv)
     srand(time(NULL));
 
     // Creates the Lost Marbles directory to write to
-    _mkdir(utils::getSavedGamesDir().c_str());
-    _mkdir(utils::getLostMarblesWriteDir().c_str()); // Returns EEXIST when the directory exists
+    boost::filesystem::create_directories(boost::filesystem::path(utils::getSavedGamesDir()));
+     boost::filesystem::create_directories(boost::filesystem::path(utils::getLostMarblesWriteDir()));
 
     std::string ogreLogPath = utils::getLostMarblesWriteDir() + "\\Ogre.log";
     Ogre::LogManager * logMgr = new LogManager;
