@@ -3,12 +3,13 @@
 
 #include "Actor.h"
 
-class StaticActor : public Actor
-{
+class StaticActor : public Actor {
 public:
-	StaticActor(Ogre::Entity *ent, OgreBulletDynamics::RigidBody *body) : Actor(ent, body) {}
+    StaticActor(Ogre::Entity *ent, OgreBulletDynamics::RigidBody *body) : Actor(ent, body) {}
 
-	bool onCollision(Actor *otherActor, btManifoldPoint& cp) { return otherActor->onCollision(this, cp); }
+    bool onCollision(Actor *otherActor, btManifoldPoint& cp) {
+        return otherActor->onCollision(this, cp);
+    }
 };
 
 #endif

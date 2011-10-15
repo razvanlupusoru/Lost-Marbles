@@ -4,40 +4,39 @@
 #include "Actor.h"
 #include <deque>
 
-class CompetitorMarble : public Actor
-{
+class CompetitorMarble : public Actor {
 public:
-	CompetitorMarble(Ogre::Entity *ent, OgreBulletDynamics::RigidBody *body);
-	bool onCollision(Actor *otherActor, btManifoldPoint& cp);
-	bool onCollision(CompetitorMarble *otherActor, btManifoldPoint& cp);
-	bool onCollision(StaticActor *otherActor, btManifoldPoint& cp);
+    CompetitorMarble(Ogre::Entity *ent, OgreBulletDynamics::RigidBody *body);
+    bool onCollision(Actor *otherActor, btManifoldPoint& cp);
+    bool onCollision(CompetitorMarble *otherActor, btManifoldPoint& cp);
+    bool onCollision(StaticActor *otherActor, btManifoldPoint& cp);
 
-	void update(float dt);
+    void update(float dt);
 
-	void addCollectedMarble(const std::string & name);
-	std::string takeAwayOneMarble();
-	const std::vector<std::string>& getListOfCollectedMarbles() const;
+    void addCollectedMarble(const std::string & name);
+    std::string takeAwayOneMarble();
+    const std::vector<std::string>& getListOfCollectedMarbles() const;
 
-	int mHealth;
-	bool mNeedsHelp;
+    int mHealth;
+    bool mNeedsHelp;
 
-	SoundManager* mSoundMgr;
-	SceneNode *mBodyNode;
+    SoundManager* mSoundMgr;
+    SceneNode *mBodyNode;
 
 protected:
-	bool mRolling, mIsSticky;
-	int mRollChannel;
+    bool mRolling, mIsSticky;
+    int mRollChannel;
 
 private:
-	void resetHealth();
-	std::deque<Ogre::Real> speeds;
-	Ogre::Real mSpeedSum;
-	Ogre::Real mSpeedAvg;
-	Ogre::Timer mDropSoundTimer;
+    void resetHealth();
+    std::deque<Ogre::Real> speeds;
+    Ogre::Real mSpeedSum;
+    Ogre::Real mSpeedAvg;
+    Ogre::Timer mDropSoundTimer;
 
-	std::vector<std::string> mCollectedMarbles;
-	OgreBulletDynamics::RigidBody *mBody;
-	Timer mTimer;
+    std::vector<std::string> mCollectedMarbles;
+    OgreBulletDynamics::RigidBody *mBody;
+    Timer mTimer;
 };
 
 #endif

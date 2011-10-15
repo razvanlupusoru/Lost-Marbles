@@ -7,43 +7,44 @@
 
 #include "GameState.h"
 
-class QuitGameState : public GameState
-{
+class QuitGameState : public GameState {
 public:
-	void enter();
-	void exit();
+    void enter();
+    void exit();
 
-	void pause();
-	void resume();
+    void pause();
+    void resume();
 
-	bool keyPressed(const OIS::KeyEvent& e);
-	bool keyReleased(const OIS::KeyEvent& e);
-	bool frameStarted(const Ogre::FrameEvent& evt);
-	bool frameEnded(const Ogre::FrameEvent& evt);
-	bool mouseMoved(const OIS::MouseEvent &e);
-	bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-	bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+    bool keyPressed(const OIS::KeyEvent& e);
+    bool keyReleased(const OIS::KeyEvent& e);
+    bool frameStarted(const Ogre::FrameEvent& evt);
+    bool frameEnded(const Ogre::FrameEvent& evt);
+    bool mouseMoved(const OIS::MouseEvent &e);
+    bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+    bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
-	static QuitGameState* getInstance() { return &sQuitGameState; }
+    static QuitGameState* getInstance() {
+        return &sQuitGameState;
+    }
 protected:
-	QuitGameState() : mContinue(true) { }
+    QuitGameState() : mContinue(true) { }
 
-	Ogre::Root *mRoot;
-	Ogre::SceneManager* mSceneMgr;
-	Ogre::Viewport* mViewport;
-	OIS::Keyboard* mKeyboard;
-	Ogre::Camera* mCamera;
-	SoundManager* mSoundMgr;
+    Ogre::Root *mRoot;
+    Ogre::SceneManager* mSceneMgr;
+    Ogre::Viewport* mViewport;
+    OIS::Keyboard* mKeyboard;
+    Ogre::Camera* mCamera;
+    SoundManager* mSoundMgr;
 
-	Timer mQuitTimer;
+    Timer mQuitTimer;
     //TODO: probably don't need these
-	bool mGameOver;
-	bool mMuteSounds;
-	int mBarrelRoll, mOhno, mBgm, mWin;
+    bool mGameOver;
+    bool mMuteSounds;
+    int mBarrelRoll, mOhno, mBgm, mWin;
 
-	bool mContinue;
+    bool mContinue;
 private:
-	static QuitGameState sQuitGameState;
+    static QuitGameState sQuitGameState;
 };
 
 #endif

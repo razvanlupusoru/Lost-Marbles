@@ -4,17 +4,18 @@
 #include "Actor.h"
 #include "Behavior.h"
 
-class FloatPowerUp : public Actor
-{
+class FloatPowerUp : public Actor {
 public:
-	FloatPowerUp(Ogre::Entity *ent, OgreBulletDynamics::RigidBody *body, int duration);
-	bool onCollision(Actor *otherActor, btManifoldPoint& cp) { return otherActor->onCollision(this, cp); }
-	bool onCollision(CompetitorMarble *otherActor, btManifoldPoint& cp);
+    FloatPowerUp(Ogre::Entity *ent, OgreBulletDynamics::RigidBody *body, int duration);
+    bool onCollision(Actor *otherActor, btManifoldPoint& cp) {
+        return otherActor->onCollision(this, cp);
+    }
+    bool onCollision(CompetitorMarble *otherActor, btManifoldPoint& cp);
 protected:
-	SoundManager* mSoundMgr;
+    SoundManager* mSoundMgr;
 private:
-	Ogre::Timer mTimer;
-	int mDuration;
+    Ogre::Timer mTimer;
+    int mDuration;
 };
 
 #endif

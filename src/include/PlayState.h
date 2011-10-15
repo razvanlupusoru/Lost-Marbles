@@ -15,142 +15,143 @@
 #include "PauseState.h"
 #include "DotLevelLoader.h"
 
-class PlayState : public GameState
-{
+class PlayState : public GameState {
 public:
-	enum Mode{NORMAL, DEBUG, TRANSITION};
-	void enter();
-	void loadSavedGame(std::string savedGameFilename);
-	bool saveGame();
-	void resetLevel();
-	void exit();
+    enum Mode {NORMAL, DEBUG, TRANSITION};
+    void enter();
+    void loadSavedGame(std::string savedGameFilename);
+    bool saveGame();
+    void resetLevel();
+    void exit();
 
-	void pause();
-	void resume();
+    void pause();
+    void resume();
 
-	bool keyPressed(const OIS::KeyEvent& e);
-	bool keyReleased(const OIS::KeyEvent& e);
-	bool frameStarted(const Ogre::FrameEvent& evt);
-	bool frameEnded(const Ogre::FrameEvent& evt);
-	bool mouseMoved(const OIS::MouseEvent &e);
-	bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-	bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+    bool keyPressed(const OIS::KeyEvent& e);
+    bool keyReleased(const OIS::KeyEvent& e);
+    bool frameStarted(const Ogre::FrameEvent& evt);
+    bool frameEnded(const Ogre::FrameEvent& evt);
+    bool mouseMoved(const OIS::MouseEvent &e);
+    bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+    bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
-	static bool contactAddedWrapper(btManifoldPoint& cp, const btCollisionObject* colObj0, int partId0, int index0, const btCollisionObject* colObj1, int partId1, int index1);
-	bool contactAdded(btManifoldPoint& cp, const btCollisionObject* colObj0, int partId0, int index0, const btCollisionObject* colObj1, int partId1, int index1);
-	static void internalTickCallbackWrapper(btDynamicsWorld *world, btScalar timeStep);
-	void internalTickCallback(btDynamicsWorld *world, btScalar timeStep);
+    static bool contactAddedWrapper(btManifoldPoint& cp, const btCollisionObject* colObj0, int partId0, int index0, const btCollisionObject* colObj1, int partId1, int index1);
+    bool contactAdded(btManifoldPoint& cp, const btCollisionObject* colObj0, int partId0, int index0, const btCollisionObject* colObj1, int partId1, int index1);
+    static void internalTickCallbackWrapper(btDynamicsWorld *world, btScalar timeStep);
+    void internalTickCallback(btDynamicsWorld *world, btScalar timeStep);
 
-	void loadHelpLayout(const std::string & layoutFile);
-	
-	Mode getCurrentState(void);
-	void setLevel(int);
+    void loadHelpLayout(const std::string & layoutFile);
 
-	static PlayState* getInstance() { return &sPlayState; }
+    Mode getCurrentState(void);
+    void setLevel(int);
+
+    static PlayState* getInstance() {
+        return &sPlayState;
+    }
 protected:
-	PlayState() : mLoadSavedGame(false) { }
+    PlayState() : mLoadSavedGame(false) { }
 
-	Ogre::Root *mRoot;
-	Ogre::SceneManager* mSceneMgr;
-	Ogre::Viewport* mViewport;
-	OIS::Keyboard* mKeyboard;
-	OIS::Mouse* mMouse;
-	Ogre::Camera* mCamera;
-	Ogre::RenderWindow *mWindow;
-	Ogre::SceneNode* mCamNode;
-	Ogre::SceneNode* mDebugCamNode;
-	Ogre::SceneNode* mTransitionCamNode;
-	SoundManager* mSoundMgr;
-	lua_State* mLuaState;
+    Ogre::Root *mRoot;
+    Ogre::SceneManager* mSceneMgr;
+    Ogre::Viewport* mViewport;
+    OIS::Keyboard* mKeyboard;
+    OIS::Mouse* mMouse;
+    Ogre::Camera* mCamera;
+    Ogre::RenderWindow *mWindow;
+    Ogre::SceneNode* mCamNode;
+    Ogre::SceneNode* mDebugCamNode;
+    Ogre::SceneNode* mTransitionCamNode;
+    SoundManager* mSoundMgr;
+    lua_State* mLuaState;
 
-	Ogre::Real mRotate;
+    Ogre::Real mRotate;
 
-	CompetitorMarble *mFocusActor;
-	Ogre::Real mTransitionRotate;
-	float mTransitionRadius;
-	float mTransitionHeight;
+    CompetitorMarble *mFocusActor;
+    Ogre::Real mTransitionRotate;
+    float mTransitionRadius;
+    float mTransitionHeight;
 
-	bool mContinue;
+    bool mContinue;
 private:
-	void updateScore();
-	void updateLife();
-	void createScene();
-	void clearScene();
-	void restoreActors(const std::vector<std::string> &listOfNames);
-	void resetIndicator();
-	void alterPlayState(Mode);
-	void createSounds();
-	void pauseGame();
-	void initPlayerCam();
+    void updateScore();
+    void updateLife();
+    void createScene();
+    void clearScene();
+    void restoreActors(const std::vector<std::string> &listOfNames);
+    void resetIndicator();
+    void alterPlayState(Mode);
+    void createSounds();
+    void pauseGame();
+    void initPlayerCam();
 
-	OgreBulletDynamics::DynamicsWorld *mWorld;
-	OgreBulletCollisions::DebugDrawer *mDebugDrawer;
-	Mode mCurrentState;
-	Mode mDebugShapesOn;
-	std::map<Ogre::String, Actor*> mActors;
-	std::vector<CompetitorMarble*> mFriends;
-	std::vector<CompetitorMarble*> mRivals;
-	std::vector<CollectibleMarble*> mTargets;
-	std::vector<LevelInformation> mLevels;
-	unsigned int mCurrentLevel;
-	int mNumTargets;
-	int mFriendScore;
-	int mFriendLastScore;
-	int mRivalScore;
-	int mRivalLastScore;
+    OgreBulletDynamics::DynamicsWorld *mWorld;
+    OgreBulletCollisions::DebugDrawer *mDebugDrawer;
+    Mode mCurrentState;
+    Mode mDebugShapesOn;
+    std::map<Ogre::String, Actor*> mActors;
+    std::vector<CompetitorMarble*> mFriends;
+    std::vector<CompetitorMarble*> mRivals;
+    std::vector<CollectibleMarble*> mTargets;
+    std::vector<LevelInformation> mLevels;
+    unsigned int mCurrentLevel;
+    int mNumTargets;
+    int mFriendScore;
+    int mFriendLastScore;
+    int mRivalScore;
+    int mRivalLastScore;
 
-	Ogre::RenderTexture *mRenderTexture;
-	
-	static PlayState sPlayState;
-	bool mLoadSavedGame;
-	std::string mSavedGameFilename;
+    Ogre::RenderTexture *mRenderTexture;
 
-	MyGUI::Gui * mGUI;
-	MyGUI::VectorWidgetPtr mTransitionLayout;
-	MyGUI::VectorWidgetPtr mConsoleLayout;
-	MyGUI::VectorWidgetPtr mPlayStateLayout;
-	MyGUI::VectorWidgetPtr mHelpLayout;
-	void initGUI();
-	void updateGUI();
-	void updatePowerups();
+    static PlayState sPlayState;
+    bool mLoadSavedGame;
+    std::string mSavedGameFilename;
 
-	/* Methods available via console */
+    MyGUI::Gui * mGUI;
+    MyGUI::VectorWidgetPtr mTransitionLayout;
+    MyGUI::VectorWidgetPtr mConsoleLayout;
+    MyGUI::VectorWidgetPtr mPlayStateLayout;
+    MyGUI::VectorWidgetPtr mHelpLayout;
+    void initGUI();
+    void updateGUI();
+    void updatePowerups();
 
-	/* End methods available via console */
+    /* Methods available via console */
 
-	/* HUD */
-	MyGUI::StaticTextPtr mPlayerScoreLabel;
-	MyGUI::StaticTextPtr mRivalScoreLabel;
-	MyGUI::StaticTextPtr mTotalScoreLabel;
-	std::vector<MyGUI::StaticImagePtr> mCollectedImages;
-	MyGUI::ProgressPtr mLifeProgressBar;
-	MyGUI::StaticImagePtr mStickyImage;
-	MyGUI::StaticImagePtr mFloatImage;
-	MyGUI::StaticImagePtr mBouncyImage;
-	MyGUI::StaticImagePtr mSpeedImage;
-	MyGUI::StaticTextPtr mStickyTimer;
-	MyGUI::StaticTextPtr mFloatTimer;
-	MyGUI::StaticTextPtr mBouncyTimer;
-	MyGUI::StaticTextPtr mSpeedTimer;
-	/* End HUD */
+    /* End methods available via console */
 
-	/* GUI Handlers */
-	void notifyWindowButtonPressed(MyGUI::Window* _sender, const std::string& _button);
-	void notifyMouseButtonClick(MyGUI::Widget* _sender);
-	void notifyComboAccept(MyGUI::ComboBox* _sender, size_t _index);
-	void notifyButtonPressed(MyGUI::Widget* _sender, MyGUI::KeyCode _key, MyGUI::Char _char);
-	void addToConsole(const MyGUI::UString & _line);
-	int interpretConsoleCommand(const MyGUI::UString & command);
-	/* End GUI Handlers */
+    /* HUD */
+    MyGUI::StaticTextPtr mPlayerScoreLabel;
+    MyGUI::StaticTextPtr mRivalScoreLabel;
+    MyGUI::StaticTextPtr mTotalScoreLabel;
+    std::vector<MyGUI::StaticImagePtr> mCollectedImages;
+    MyGUI::ProgressPtr mLifeProgressBar;
+    MyGUI::StaticImagePtr mStickyImage;
+    MyGUI::StaticImagePtr mFloatImage;
+    MyGUI::StaticImagePtr mBouncyImage;
+    MyGUI::StaticImagePtr mSpeedImage;
+    MyGUI::StaticTextPtr mStickyTimer;
+    MyGUI::StaticTextPtr mFloatTimer;
+    MyGUI::StaticTextPtr mBouncyTimer;
+    MyGUI::StaticTextPtr mSpeedTimer;
+    /* End HUD */
 
-	/*Console GUI*/
-	MyGUI::WindowPtr mConsoleWindow;
-	MyGUI::EditPtr mListHistory;
-	MyGUI::ComboBoxPtr mComboCommand;
-	MyGUI::ButtonPtr mButtonSubmit;
-	bool mAutocompleted;
-	bool firstConsoleInit;
-	/* End Console GUI */
+    /* GUI Handlers */
+    void notifyWindowButtonPressed(MyGUI::Window* _sender, const std::string& _button);
+    void notifyMouseButtonClick(MyGUI::Widget* _sender);
+    void notifyComboAccept(MyGUI::ComboBox* _sender, size_t _index);
+    void notifyButtonPressed(MyGUI::Widget* _sender, MyGUI::KeyCode _key, MyGUI::Char _char);
+    void addToConsole(const MyGUI::UString & _line);
+    int interpretConsoleCommand(const MyGUI::UString & command);
+    /* End GUI Handlers */
+
+    /*Console GUI*/
+    MyGUI::WindowPtr mConsoleWindow;
+    MyGUI::EditPtr mListHistory;
+    MyGUI::ComboBoxPtr mComboCommand;
+    MyGUI::ButtonPtr mButtonSubmit;
+    bool mAutocompleted;
+    bool firstConsoleInit;
+    /* End Console GUI */
 };
 
 #endif

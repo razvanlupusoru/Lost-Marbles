@@ -6,15 +6,16 @@
 #include "Actor.h"
 #include "PlayState.h"
 
-class LostBehavior : public IBehavior
-{
+class LostBehavior : public IBehavior {
 public:
-	LostBehavior(Actor *actor) : mActor(actor) { mJumpTimer.reset(); }
+    LostBehavior(Actor *actor) : mActor(actor) {
+        mJumpTimer.reset();
+    }
 
-	bool act(float dt);
+    bool act(float dt);
 private:
-	Actor *mActor;
-	Ogre::Timer mJumpTimer;
+    Actor *mActor;
+    Ogre::Timer mJumpTimer;
 };
 
 #endif

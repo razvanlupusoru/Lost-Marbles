@@ -15,24 +15,23 @@
 //std::ostream& operator<<( std::ostream& stream, const Ogre::Entity ent );
 #include "luabind/operator.hpp"
 
-class LuaBinding
-{
+class LuaBinding {
 public:
-	LuaBinding(lua_State * L) : mLuaState(L) {}
-	void bindLua();
+    LuaBinding(lua_State * L) : mLuaState(L) {}
+    void bindLua();
 private:
-	lua_State * mLuaState;
-	void bindVector3();
-	void bindColourValue();
-	void bindIBehavior();
-	void bindRivalBehavior();
-	void bindActor();
-	void bindOgreBulletDynamicsRigidBody();
-	void bindbtCollisionObject();
-	void bindSceneNode();
-	void bindNode();
-	void bindGameState();
-	void bindPlayState();
+    lua_State * mLuaState;
+    void bindVector3();
+    void bindColourValue();
+    void bindIBehavior();
+    void bindRivalBehavior();
+    void bindActor();
+    void bindOgreBulletDynamicsRigidBody();
+    void bindbtCollisionObject();
+    void bindSceneNode();
+    void bindNode();
+    void bindGameState();
+    void bindPlayState();
 };
 
 #endif

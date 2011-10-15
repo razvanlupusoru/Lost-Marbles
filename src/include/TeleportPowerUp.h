@@ -4,18 +4,19 @@
 #include "Actor.h"
 #include "Behavior.h"
 
-class TeleportPowerUp : public Actor
-{
+class TeleportPowerUp : public Actor {
 public:
-	TeleportPowerUp(Ogre::Entity *ent, OgreBulletDynamics::RigidBody *body, Ogre::String target);
-	bool onCollision(Actor *otherActor, btManifoldPoint& cp) { return otherActor->onCollision(this, cp); }
-	bool onCollision(CompetitorMarble *otherActor, btManifoldPoint& cp);
+    TeleportPowerUp(Ogre::Entity *ent, OgreBulletDynamics::RigidBody *body, Ogre::String target);
+    bool onCollision(Actor *otherActor, btManifoldPoint& cp) {
+        return otherActor->onCollision(this, cp);
+    }
+    bool onCollision(CompetitorMarble *otherActor, btManifoldPoint& cp);
 protected:
-	SoundManager* mSoundMgr;
+    SoundManager* mSoundMgr;
 private:
-	Ogre::Timer mTimer;
-	Ogre::String mTarget;
-	int mDuration;
+    Ogre::Timer mTimer;
+    Ogre::String mTarget;
+    int mDuration;
 };
 
 #endif
