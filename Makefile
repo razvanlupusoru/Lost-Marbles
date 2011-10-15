@@ -165,6 +165,16 @@ freetypeobjects = \
 	dependencies/freetype/src/truetype/truetype.o \
 	dependencies/freetype/src/smooth/smooth.o
 	
+boostfilesystemobjects = \
+	dependencies/boost/filesystem/v3/src/codecvt_error_category.o \
+	dependencies/boost/filesystem/v3/src/operations.o \
+	dependencies/boost/filesystem/v3/src/path.o \
+	dependencies/boost/filesystem/v3/src/path_traits.o \
+	dependencies/boost/filesystem/v3/src/portability.o \
+	dependencies/boost/filesystem/v3/src/unique_path.o \
+	dependencies/boost/filesystem/v3/src/utf8_codecvt_facet.o \
+	dependencies/boost/filesystem/v3/src/windows_file_codecvt.o
+	
 myguiengineobjects = \
 	dependencies/MyGUI/MyGUIEngine/src/MyGUI_Button.o \
 	dependencies/MyGUI/MyGUIEngine/src/MyGUI_Canvas.o \
@@ -303,7 +313,8 @@ dependencies = \
 
 cdependencies = \
 	$(luaobjects) \
-	
+	$(freetypeobjects)
+
 ifeq ($(OS),windows)
 	RemoveObjectFiles=Clean.bat
 	LOSTMARBLESEXE=bin/LostMarbles.exe
