@@ -8,13 +8,6 @@ namespace Ogre {
 
 class ImprovedConfigFile : public ConfigFile {
 public:
-    ImprovedConfigFile() : separators(), filename() {
-        ConfigFile::ConfigFile();
-    }
-
-    ~ImprovedConfigFile() {
-    }
-
     // note: saving is only supported for direct loaded files atm!
     void load(const String& filename, const String& separators, bool trimWhitespace) {
         this->separators = separators;
