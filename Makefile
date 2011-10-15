@@ -9,7 +9,7 @@ CFLAGS= \
 	-Idependencies \
 	-Idependencies/Bullet \
 	-Idependencies/Bullet/ConvexDecomposition \
-	-Idependencies/OGRE \
+	-Idependencies/OGRE/OgreMain/include \
 	-Idependencies/OgreBullet/Collisions/include \
 	-Idependencies/OgreBullet/Dynamics/include \
 	-Idependencies/fmod/include \
@@ -22,8 +22,7 @@ CFLAGS= \
 	-Idependencies/OIS \
 	-Isrc/include \
 	-Wall \
-	-DMYGUI_USE_FREETYPE \
-	-DOGRE_THREAD_SUPPORT=2
+	-DMYGUI_USE_FREETYPE
 
 ifeq ($(DEBUG),true)
 	CFLAGS += -g -DLostMarblesDebug -O1
