@@ -12,20 +12,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 int main(int argc, char **argv)
 #endif
 {
+    int ret = 0;
     srand(time(NULL));
 
     // Creates the Lost Marbles directory to write to
-    boost::filesystem::create_directories(boost::filesystem::path(utils::getSavedGamesDir()));
-     boost::filesystem::create_directories(boost::filesystem::path(utils::getLostMarblesWriteDir()));
+    boost::filesystem::path lostMarblesDir(utils::getLostMarblesWriteDir());
+    boost::filesystem::create_directories(lostMarblesDir);
 
-    std::string ogreLogPath = utils::getLostMarblesWriteDir() + "\\Ogre.log";
-    Ogre::LogManager * logMgr = new LogManager;
+    std::string ogreLogPath = (lostMarblesDir / "Ogre.log").string();
     Log * log = LogManager::getSingletonPtr()->createLog(ogreLogPath, true, true, false);
 
-    std::string ogreCfgPath = utils::getLostMarblesWriteDir() + "\\Ogre.cfg";
+    std::string ogreCfgPath = (lostMarblesDir / "Ogre.cfg").string();
     Ogre::Root * root = new Ogre::Root("Plugins.cfg",ogreCfgPath);
 
-    log->logMessage("Main Lost Marbles write directory " + utils::getLostMarblesWriteDir());
+    log->logMessage("Main Lost Marbles write directory " + lostMarblesDir.string());
     log->logMessage("Log Path: " + ogreLogPath);
     log->logMessage("Config Path: " + ogreCfgPath);
 
@@ -48,11 +48,12 @@ int main(int argc, char **argv)
 #else
             std::cerr << "An exception has occured: " << e.getFullDescription();
 #endif
+            ret = 1;
         }
 
         delete game;
     }
 
     delete log;
-    return 0;
+    return ret;
 }
