@@ -120,6 +120,15 @@ del /f /q dependencies\freetype\src\base\ftwinfnt.o
 del /f /q dependencies\freetype\src\base\ftxf86.o
 del /f /q dependencies\freetype\src\truetype\truetype.o
 del /f /q dependencies\freetype\src\smooth\smooth.o
+del /f /q dependencies\boost\filesystem\v3\src\codecvt_error_category.o
+del /f /q dependencies\boost\filesystem\v3\src\operations.o
+del /f /q dependencies\boost\filesystem\v3\src\path.o
+del /f /q dependencies\boost\filesystem\v3\src\path_traits.o
+del /f /q dependencies\boost\filesystem\v3\src\portability.o
+del /f /q dependencies\boost\filesystem\v3\src\unique_path.o
+del /f /q dependencies\boost\filesystem\v3\src\utf8_codecvt_facet.o
+del /f /q dependencies\boost\filesystem\v3\src\windows_file_codecvt.o
+del /f /q dependencies\boost\system\error_code.o
 del /f /q dependencies\MyGUI\MyGUIEngine\src\MyGUI_Button.o
 del /f /q dependencies\MyGUI\MyGUIEngine\src\MyGUI_Canvas.o
 del /f /q dependencies\MyGUI\MyGUIEngine\src\MyGUI_ComboBox.o

@@ -1,10 +1,11 @@
 # Settings
 CPP=g++
 CC=gcc
-DEBUG=false
+DEBUG=true
 OS=windows
 # End Settings
 
+# Ogre build settings found in src/include/OgreBuildSettings.h
 CFLAGS= \
 	-Idependencies \
 	-Idependencies/Bullet \
@@ -22,10 +23,11 @@ CFLAGS= \
 	-Idependencies/OIS \
 	-Isrc/include \
 	-Wall \
-	-DMYGUI_USE_FREETYPE
+	-DMYGUI_USE_FREETYPE \
+    -DBOOST_ALL_NO_LIB
 
 ifeq ($(DEBUG),true)
-	CFLAGS += -g -DLostMarblesDebug -O1
+	CFLAGS += -g -DLostMarblesDebug -O0
 else
 	CFLAGS += -O3
 endif
@@ -172,7 +174,8 @@ boostfilesystemobjects = \
 	dependencies/boost/filesystem/v3/src/portability.o \
 	dependencies/boost/filesystem/v3/src/unique_path.o \
 	dependencies/boost/filesystem/v3/src/utf8_codecvt_facet.o \
-	dependencies/boost/filesystem/v3/src/windows_file_codecvt.o
+	dependencies/boost/filesystem/v3/src/windows_file_codecvt.o \
+	dependencies/boost/system/error_code.o
 	
 myguiengineobjects = \
 	dependencies/MyGUI/MyGUIEngine/src/MyGUI_Button.o \
@@ -308,18 +311,18 @@ dependencies = \
 	$(ogrebulletobjects) \
 	$(luabindobjects) \
 	$(myguiengineobjects) \
-	$(myguiplatformobjects)
+	$(myguiplatformobjects) \
+	$(boostfilesystemobjects)
 
 cdependencies = \
-	$(luaobjects) \
-	$(freetypeobjects)
+	$(luaobjects)
 
 ifeq ($(OS),windows)
 	RemoveObjectFiles=Clean.bat
 	LOSTMARBLESEXE=bin/LostMarbles.exe
 	LDFLAGS=-Llib/prebuilt/windows-x86 -mwindows -lmingw32 -lwinmm -lole32
 else
-	RemoveObjectFiles=rm -rf $(lostmarblesobjects) $(dependencies)
+	RemoveObjectFiles=rm -rf $(lostmarblesobjects) $(dependencies) $(cdependencies)
 	LOSTMARBLESEXE=bin/LostMarbles
 endif
 
