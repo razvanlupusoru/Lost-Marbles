@@ -2,7 +2,7 @@
 #define InputManager_H
 
 #include <Ogre.h>
-#include <OIS/OIS.h>
+#include <OIS.h>
 
 class InputManager : public Ogre::Singleton<InputManager> {
 public:

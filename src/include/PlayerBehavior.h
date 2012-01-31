@@ -1,7 +1,7 @@
 #ifndef PLAYERBEHAVIOR_H
 #define PLAYERBEHAVIOR_H
 
-#include <OIS/OIS.h>
+#include <OIS.h>
 #include "Behavior.h"
 
 #include "Actor.h"

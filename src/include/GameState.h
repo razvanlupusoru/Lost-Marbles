@@ -2,7 +2,7 @@
 #define GameState_H
 
 #include <Ogre.h>
-#include <OIS/OIS.h>
+#include <OIS.h>
 
 #include "GameManager.h"
 class GameState {

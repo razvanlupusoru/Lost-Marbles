@@ -4,3 +4,9 @@
 *.dll
 *.txt
 *.so
+*.cmake
+*.old
+cmake_install.cmake
+CMakeFiles
+Makefile
+CMakeCache.txt

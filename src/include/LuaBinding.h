@@ -2,7 +2,7 @@
 #define LUABINDING_H
 
 #include <Ogre.h>
-#include <OIS/OIS.h>
+#include <OIS.h>
 
 #include "luabind/lua_include.hpp"
 #include "luabind/luabind.hpp"
